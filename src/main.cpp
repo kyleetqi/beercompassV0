@@ -1,18 +1,21 @@
+// Include required libraries
 #include <Arduino.h>
+#include <utils.h>
+#include <qmc5883l.h>
 
-// put function declarations here:
-int myFunction(int, int);
+// Declare OLED parameters
+#define OLED_ADDRESS 0x3c
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  Serial.begin(1000000); // TODO: Determine serial rate
+  // compass.init(); // TODO: Declare compass object and initialize
+
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  
 }
