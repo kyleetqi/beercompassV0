@@ -23,24 +23,24 @@ void qmc5883l::calibrate(int calibrationTime){
     while (isCalibrated = false) {
 
         uint32_t now = millis();
-        xRead = getX();
-        yRead = getY();
-        zRead = getZ();
+        int xRead = getX();
+        int yRead = getY();
+        int zRead = getZ();
 
         if (xRead > maxReadings[1][1]) {
             maxReadings[1][1] = xRead;
             maxReadings[1][2] = now;
-            isCalibrated = false
+            isCalibrated = false;
         }
         if (yRead > maxReadings[2][1]) {
             maxReadings[2][1] = xRead;
             maxReadings[2][2] = now;
-            isCalibrated = false
+            isCalibrated = false;
         }
         if (zRead > maxReadings[3][1]) {
             maxReadings[3][1] = xRead;
             maxReadings[3][2] = now;
-            isCalibrated = false
+            isCalibrated = false;
         }
         
         if ((now - maxReadings[1][2]) > calibrationTime ||
@@ -55,19 +55,20 @@ void qmc5883l::calibrate(int calibrationTime){
 }
 
 int qmc5883l::getReading(){
-
+    return 1;
 }
 
 int qmc5883l::getX() {
     // TODO: create function
+    return 1;
 }
 
 int qmc5883l::getY() {
-
+    return 1;
 }
 
 int qmc5883l::getZ() {
-    
+    return 1;
 }
 
 float qmc5883l::normalize(float val) {
