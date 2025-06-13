@@ -9,12 +9,22 @@ class qmc5883l {
      */
     qmc5883l();
 
+
+    /** @brief
+     * 
+     */
+    struct CalibrationData {
+        int maxX;
+        int maxY;
+        int maxZ;
+    };
+
     /**
      * 
      * @param calibrationTime calibration is complete when no new values for this amount of time
      * 
      */
-    void calibrate(int calibrationTime);
+    CalibrationData calibrate(int calibrationTime);
 
     /**
      * 

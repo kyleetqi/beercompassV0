@@ -1,8 +1,10 @@
 // Include required libraries
 #include <Arduino.h>
-#include <utils.h>
-#include <qmc5883l.h>
+#include "utils.h"
+#include "qmc5883l.h"
 
+
+// TODO: abstract this code
 // Declare OLED parameters
 #define OLED_ADDRESS 0x3c
 #define SCREEN_WIDTH 128
