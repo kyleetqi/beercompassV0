@@ -1,12 +1,10 @@
 #include <Arduino.h>
 #include "utils.h"
 
-// Function definitions
-
-
 
 float trueHeading(int azimuth, float x, float y, float z){
-
+  return 1.0;
+  // TODO: Make this function work
 }
 
 
