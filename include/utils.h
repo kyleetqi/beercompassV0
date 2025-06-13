@@ -25,4 +25,17 @@ void initMagnetometer();
  */
 void initAcclerometer();
 
+/**
+ * 
+ */
+struct closestLocation {
+    float Xcoord;
+    float Ycoord;
+};
+
+/**
+ * @brief Determines closest coordinates from dataset given current location
+ */
+closestLocation calcClosestLocation(float myX, float myY);
+
 #endif
