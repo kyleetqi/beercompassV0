@@ -6,10 +6,9 @@ qmc5883l::CalibrationData qmc5883l::calibrate(int calibrationTime){
 
     bool isCalibrated = false;
 
-    /*
-    Stores the maximum magnetometer reading
-    plus the time it was recorded at
-    */
+
+    // Stores the maximum magnetometer reading
+    // Plus the time it was recorded at
     int maxReadings[3][2]{
         {getX(), (int)millis()},
         {getY(), (int)millis()},
@@ -36,6 +35,7 @@ qmc5883l::CalibrationData qmc5883l::calibrate(int calibrationTime){
             isCalibrated = true;
     } 
 
+    // Return struct containing calibration data
     return CalibrationData{
         maxReadings[0][0],
         maxReadings[1][0],
@@ -72,3 +72,7 @@ float qmc5883l::normalize(float val) {
 float qmc5883l::getXNormalized() { return normalize(float(getX())); }
 float qmc5883l::getYNormalized() { return normalize(float(getX())); }
 float qmc5883l::getZNormalized() { return normalize(float(getZ())); }
+
+float getTemperature(){
+    return 1;
+}
