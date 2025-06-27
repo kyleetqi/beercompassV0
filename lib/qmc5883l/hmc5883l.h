@@ -1,13 +1,16 @@
-#ifndef QMC5883L_H
-#define QMC5883L_H
+#ifndef HMC5883L_H
+#define HMC5883L_H
 
-class qmc5883l {
+// I2C address of hmc5883l
+#define HMC5883L_ADDR 0x2C
+
+class hmc5883l {
     public:
 
     /**
      * 
      */
-    qmc5883l();
+    hmc5883l();
 
 
     /** @brief Struct that stores the maximum X, Y, and Z readings
