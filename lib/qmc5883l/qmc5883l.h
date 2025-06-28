@@ -1,16 +1,31 @@
 #ifndef HMC5883L_H
 #define HMC5883L_H
 
-// I2C address of hmc5883l
+// I2C address of qmc5883l
 #define HMC5883L_ADDR 0x2C
 
-class hmc5883l {
+// Configuration Register A bits
+// All bits set to default value except for CRA7
+// Reference pg 12 of datasheet for more info
+#define CRA 0b01110000
+
+// Configuration Register B bits
+// All bits set to default value
+// Reference pg 13 of datasheet for more info
+#define CRB 0b00100000
+
+// Mode Register bits
+// ALl bits set to default value
+// Reference pg 14 of datasheet for more info
+#define MODE_REG 0b10000001
+
+class qmc5883l {
     public:
 
     /**
      * 
      */
-    hmc5883l();
+    qmc5883l();
 
 
     /** @brief Struct that stores the maximum X, Y, and Z readings

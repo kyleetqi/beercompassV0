@@ -1,8 +1,8 @@
-#include "hmc5883l.h"
+#include "qmc5883l.h"
 #include <Arduino.h>
 #include <Wire.h>
 
-hmc5883l::CalibrationData hmc5883l::calibrate(int calibrationTime){
+qmc5883l::CalibrationData qmc5883l::calibrate(int calibrationTime){
 
     bool isCalibrated = false;
 
@@ -44,34 +44,34 @@ hmc5883l::CalibrationData hmc5883l::calibrate(int calibrationTime){
 
 }
 
-int hmc5883l::getReading(){
+int qmc5883l::getReading(){
     return 1;
 }
 
-int hmc5883l::getX() {
+int qmc5883l::getX() {
     // TODO: create function
     return 1;
 }
 
-int hmc5883l::getY() {
+int qmc5883l::getY() {
     // TODO: create function
     return 1;
 }
 
-int hmc5883l::getZ() {
+int qmc5883l::getZ() {
     // TODO: create function
     return 1;
 }
 
-float hmc5883l::normalize(float val) {
+float qmc5883l::normalize(float val) {
     if (val >= 0)
         return val/32767.0f;
     return val/32768.0f;
 }
 
-float hmc5883l::getXNormalized() { return normalize(float(getX())); }
-float hmc5883l::getYNormalized() { return normalize(float(getX())); }
-float hmc5883l::getZNormalized() { return normalize(float(getZ())); }
+float qmc5883l::getXNormalized() { return normalize(float(getX())); }
+float qmc5883l::getYNormalized() { return normalize(float(getX())); }
+float qmc5883l::getZNormalized() { return normalize(float(getZ())); }
 
 float getTemperature(){
     return 1;
