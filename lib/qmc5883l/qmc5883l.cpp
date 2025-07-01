@@ -5,6 +5,7 @@
 bool qmc5883l::setMode(Mode mode){
     uint8_t current = i2cRead(this->address, CTRLA_REG);
 
+    // TODO: I might remove this block of code
     // Early return if mode is already set properly
     if(readBits(current, 0b11) == static_cast<uint8_t>(mode)){
         return true;
@@ -25,44 +26,86 @@ bool qmc5883l::setMode(Mode mode){
 }
     
 bool qmc5883l::setOutputRate(uint8_t odr){
-
     // Set bits based on mode selected
     uint8_t bits;
-    if(odr == 10){
-        bits = 0b00;
-    }else if (odr == 50){
-        bits = 0b01;
-    }else if (odr == 100){
-        bits = 0b10;
-    }else if (odr == 200){
-        bits = 0b11;
-    }else {
-        return false;
+    switch(odr){
+        case 10: bits = 0b00; break;
+        case 50: bits = 0b01; break;
+        case 100: bits = 0b10; break;
+        case 200: bits = 0b11; break;
+        default: return false;
     }
+    bits <<= 2;
 
-    // Write to register
-    return i2cWrite(this->address, CTRLA_REG, bits);
+    // Set output rate
+    uint8_t current = i2cRead(this->address, CTRLA_REG);
+    current = writeBits(current, bits, 0b00001100);
+    return i2cWrite(this->address, CTRLA_REG, current);
+}
+
+bool qmc5883l::setOverSampleRate(uint8_t osr1){
+    // Set bits based on mode selected
+    uint8_t bits;
+    switch(osr1){
+        case 8: bits = 0b00; break;
+        case 4: bits = 0b01; break;
+        case 2: bits = 0b10; break;
+        case 1: bits = 0b11; break;
+        default: return false;
+    }
+    bits <<= 4;
+
+    // Set over sample rate
+    uint8_t current = i2cRead(this->address, CTRLA_REG);
+    current = writeBits(current, bits, 0b00110000);
+    return i2cWrite(this->address, CTRLA_REG, current);
+}
+
+bool qmc5883l::setDownSampleRate(uint8_t osr2){
+    // Set bits based on mode selected
+    uint8_t bits;
+    switch(osr2){
+        case 1: bits = 0b00; break;
+        case 2: bits = 0b01; break;
+        case 4: bits = 0b10; break;
+        case 8: bits = 0b11; break;
+        default: return false;
+    }
+    bits <<= 6;
+
+    // Set down sample rate
+    uint8_t current = i2cRead(this->address, CTRLA_REG);
+    current = writeBits(current, bits, 0b11000000);
+    return i2cWrite(this->address, CTRLA_REG, current);
+}
+
+bool qmc5883l::setSetResetMode(uint8_t mode){
+    
 
 }
 
-bool setOverSampleRate(uint8_t osr1){
+bool qmc5883l::setRange(uint8_t rng){
+    // Set bits based on mode selected
+    uint8_t bits;
+    switch(rng){
+        case 30: bits = 0b00; break;
+        case 12: bits = 0b01; break;
+        case 8: bits = 0b10; break;
+        case 2: bits = 0b11; break;
+        default: return false;
+    }
+    bits <<= 2;
 
+    // Set range
+    uint8_t current = i2cRead(this->address, CTRLB_REG);
+    current = writeBits(current, bits, 0b00001100);
+    return i2cWrite(this->address, CTRLB_REG, current);
 }
 
-bool setDownSampleRate(uint8_t osr2){
-
-}
-
-bool setSetResetMode(uint8_t mode){
-
-}
-
-bool setRange(uint8_t rng){
-
-}
-
-bool resetRegisters(){
-
+bool qmc5883l::resetRegisters(){
+    uint8_t current = i2cRead(this->address, CTRLB_REG);
+    writeBits(current, 0b10000000, 0b10000000);
+    return i2cWrite(this->address, CTRLB_REG, current);
 }
 
 qmc5883l::CalibrationData qmc5883l::calibrate(int calibrationTime){
