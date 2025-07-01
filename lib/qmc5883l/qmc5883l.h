@@ -1,41 +1,59 @@
 #ifndef HMC5883L_H
 #define HMC5883L_H
 
-// I2C address of qmc5883l
-#define HMC5883L_ADDR 0x2C
+#include <Arduino.h>
 
-// Configuration Register A bits
-// All bits set to default value except for CRA7
-// Reference pg 12 of datasheet for more info
-#define CRA 0b01110000
-
-// Configuration Register B bits
-// All bits set to default value
-// Reference pg 13 of datasheet for more info
-#define CRB 0b00100000
-
-// Mode Register bits
-// ALl bits set to default value
-// Reference pg 14 of datasheet for more info
-#define MODE_REG 0b10000001
+// Magnetometer registers
+#define XLSB_REG 0x01
+#define XMSB_REG 0x02
+#define YLSB_REG 0x03
+#define YMSB_REG 0x04
+#define ZLSB_REG 0x05
+#define ZMSB_REG 0x06
+#define STATUS_REG 0x09
+#define CTRLA_REG 0x0A
+#define CTRLB_REG 0x0B
 
 class qmc5883l {
     public:
 
-    /**
-     * 
-     */
-    qmc5883l();
+    qmc5883l(uint8_t myAddr){
+        address = myAddr;
+    };
 
-
-    /** @brief Struct that stores the maximum X, Y, and Z readings
-     * 
-     */
     struct CalibrationData {
         int maxX;
         int maxY;
         int maxZ;
     };
+
+    enum class Mode : uint8_t {
+        Suspend = 0b00,
+        Normal = 0b01,
+        Single = 0b10,
+        Continuous = 0b11,
+    };
+
+    /** @brief Sets the magnetometer's data output mode
+     *  @param mode The desired mode
+     *  @return Returns true if mode was set successfully
+     */
+    bool setMode(Mode mode); // TODO: make sure suspend is called between mode changes
+
+    bool setOutputRate(uint8_t odr = 100);
+    bool setOverSampleRate(uint8_t osr1 = 2);
+    bool setDownSampleRate(uint8_t osr2 = 4);
+
+    bool setSetResetMode(uint8_t mode = 0b01);
+    bool setRange(uint8_t rng = 0b11);
+    bool resetRegisters();
+
+    /** @brief Tells you if the magnetometer has data ready
+     *  @return The status of the magnetometer
+     */
+    bool isDRDY();
+
+    bool isOVFL();
 
     /** @brief Calculates the maximum readings in the X, Y, and Z axis
      * @param calibrationTime calibration is complete when no new values for this amount of time
@@ -43,32 +61,36 @@ class qmc5883l {
      */
     CalibrationData calibrate(int calibrationTime);
 
-    /** 
-     * 
-     */
-    bool init();
-
     /** @brief Obtains the magnetometer's reading in the X axis
      * 
      */
-    int getX();
+    uint16_t getX();
 
     /** @brief Obtains the magnetometer's reading in the Y axis
      * 
      */
-    int getY();
+    uint16_t getY();
 
     /* @brief Obtains the magnetometer's reading in the Z axis
     *
     */
-    int getZ();
+    uint16_t getZ();
+
     float getXNormalized();
     float getYNormalized();
     float getZNormalized();
     float getTemperature(); // TODO: Determine return type of temp sensor
 
     private:
-    int getReading();
+
+    /** 
+     * @brief I2C address of the device
+     */
+    uint8_t address;
+
+    /** 
+     * @brief Normalize result to value between -1 and 1
+     */
     float normalize(float val);
 };
 
