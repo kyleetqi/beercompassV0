@@ -38,8 +38,7 @@ class qmc5883l {
      *  @param mode The desired mode
      *  @return Returns true if mode was set successfully
      */
-    bool setMode(Mode mode); // TODO: make sure suspend is called between mode changes
-
+    bool setMode(Mode mode);
     bool setOutputRate(uint8_t odr = 100);
     bool setOverSampleRate(uint8_t osr1 = 2);
     bool setDownSampleRate(uint8_t osr2 = 4);
