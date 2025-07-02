@@ -19,7 +19,6 @@ bool i2cScan(){
       deviceDetected = 1;
       }
     }
-
     return deviceDetected;
 }
 
@@ -38,13 +37,15 @@ uint8_t i2cRead(uint8_t addr, uint8_t reg){
     Wire.beginTransmission(addr);
     Wire.write(reg);
     if (Wire.endTransmission(false) != 0){
+        Serial.println("I2C Read failed!");
         return 0; // TODO: need to figure out a failed read return
     }
 
-    uint8_t numBytes = 1; // Need dummy variable to get rid of warning :/
+    uint8_t numBytes = 1; // Need dummy variable to get rid of warning
     Wire.requestFrom(addr, numBytes);
     if(Wire.available()){
         return Wire.read();
     }
+    Serial.println("I2C Read failed!");
     return 0; // TODO: need to figure out a failed read return
 }
