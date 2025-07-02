@@ -79,8 +79,8 @@ bool qmc5883l::setDownSampleRate(uint8_t osr2){
     return i2cWrite(this->address, CTRLA_REG, current);
 }
 
+// TODO: Implement this function
 bool qmc5883l::setSetResetMode(uint8_t mode){
-    
 
 }
 
@@ -108,76 +108,93 @@ bool qmc5883l::resetRegisters(){
     return i2cWrite(this->address, CTRLB_REG, current);
 }
 
-qmc5883l::CalibrationData qmc5883l::calibrate(int calibrationTime){
-
-    // Stores the maximum magnetometer reading
-    // Plus the time it was recorded at
-    int maxReadings[3][2]{
-        {getX(), (int)millis()},
-        {getY(), (int)millis()},
-        {getZ(), (int)millis()},
+void qmc5883l::calibrate(int calibrationTime){
+    // Stores the max and min magnetometer reading
+    int16_t minMaxReadings[3][2] = {
+        {INT16_MAX, INT16_MIN},
+        {INT16_MAX, INT16_MIN},
+        {INT16_MAX, INT16_MIN},
     };
+
+    // Tracks timestamp of last array update
+    uint32_t timeStamp = millis();
 
     // If no new max values have been written for
-    // 5 seconds, then the compass is calibrated
+    // calibrationTime seconds, then the compass is calibrated
     bool isCalibrated = false;
     while (!isCalibrated) {
-
-        uint32_t now = millis();
-        int readings[3] = {getX(), getY(), getZ()};
+        Serial.println("Keep moving compass...");
+        int16_t readings[3] = {getXRaw(), getYRaw(), getZRaw()};
 
         for (int i = 0; i < 3; i++) {
-            if (readings[i] > maxReadings[i][0]) {
-                maxReadings[i][0] = readings[i];
-                maxReadings[i][1] = now;
+            if (readings[i] < minMaxReadings[i][0]) {
+                minMaxReadings[i][0] = readings[i];
+                timeStamp = millis();
+            }
+            if (readings[i] > minMaxReadings[i][1]) {
+                minMaxReadings[i][1] = readings[i];
+                timeStamp = millis();
             }
         }
-        
-        if ((now - maxReadings[0][1]) > calibrationTime &&
-            (now - maxReadings[1][1]) > calibrationTime &&
-            (now - maxReadings[2][1]) > calibrationTime)
+
+        if (millis() - timeStamp > calibrationTime) {
             isCalibrated = true;
+        }
+        delay(10);
     } 
 
-    // Return struct containing calibration data
-    return CalibrationData{
-        maxReadings[0][0],
-        maxReadings[1][0],
-        maxReadings[2][0],
-    };
+    // Write the values to the object
+    this->maxX = minMaxReadings[0][1];
+    this->maxY = minMaxReadings[1][1];
+    this->maxZ = minMaxReadings[2][1];
+    this->minX = minMaxReadings[0][0];
+    this->minY = minMaxReadings[1][0];
+    this->minZ = minMaxReadings[2][0];
 
+    // Write values to serial
+    Serial.print("X min val: ");
+    Serial.print(this->minX);
+    Serial.print(" ");
+    Serial.print("X max val: ");
+    Serial.println(this->maxX);
+
+    Serial.print("Y min val: ");
+    Serial.print(this->minY);
+    Serial.print(" ");
+    Serial.print("Y max val: ");
+    Serial.println(this->maxY);
+
+    Serial.print("Z min val: ");
+    Serial.print(this->minZ);
+    Serial.print(" ");
+    Serial.print("Z max val: ");
+    Serial.println(this->maxZ);
 }
 
 bool qmc5883l::isDRDY(){
     return (i2cRead(this->address, STATUS_REG) & 1);
 }
 
+// TODO: Make this function
 bool isOVFL(){
-
 }
 
-uint16_t qmc5883l::getX() {
-    int16_t result = i2cRead(this->address, XMSB_REG) << 8;
-    result |= i2cRead(this->address, XLSB_REG);
-    return result;
+int16_t qmc5883l::getReading(uint8_t msbReg, uint8_t lsbReg){
+    uint8_t msb = i2cRead(this->address, msbReg);
+    uint8_t lsb = i2cRead(this->address, lsbReg);
+    return (int16_t)((msb << 8) | lsb); 
 }
 
-uint16_t qmc5883l::getY() {
+int16_t qmc5883l::getXRaw() {return getReading(XMSB_REG, XLSB_REG);}
+int16_t qmc5883l::getYRaw() {return getReading(YMSB_REG, YLSB_REG);}
+int16_t qmc5883l::getZRaw() {return getReading(ZMSB_REG, ZLSB_REG);}
+
+float qmc5883l::normalize(int16_t val, int16_t maxVal, int16_t minVal) {
+    float center = (maxVal + minVal)/2.0f;
+    float halfRange = (maxVal - minVal)/2.0f;
+    return (val - center)/ halfRange;
 }
 
-uint16_t qmc5883l::getZ() {
-}
-
-float qmc5883l::normalize(float val) {
-    if (val >= 0)
-        return val/32767.0f;
-    return val/32768.0f;
-}
-
-float qmc5883l::getXNormalized() { return normalize(float(getX())); }
-float qmc5883l::getYNormalized() { return normalize(float(getX())); }
-float qmc5883l::getZNormalized() { return normalize(float(getZ())); }
-
-float getTemperature(){
-    return 1;
-}
+float qmc5883l::getX() {return normalize(getXRaw(), this->maxX, this->minX);}
+float qmc5883l::getY() {return normalize(getYRaw(), this->maxY, this->minY);}
+float qmc5883l::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
