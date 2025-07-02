@@ -19,11 +19,7 @@
 
 // Magnetometer global declarations
 #define QMC5883L_ADDR 0x2C // I2C address of qmc5883l
-#define QMC5883L_MODE 0b11 // Continuous read mode
-#define QMC5883L_ODR 0b10 // 100 Hz output rate
-#define QMC5883L_OSR1 0b10 // 2x oversampling ratio
-#define QMC5883L_OSR2 0b10 // 4x downsampling rate
-// ^tbh all these declarations might not be necessary but we'll see ig
+#define CALIBRATION_TIME 5000 
 
 // Create magnetometer object
 qmc5883l myCompass = qmc5883l(QMC5883L_ADDR);
@@ -32,7 +28,7 @@ qmc5883l myCompass = qmc5883l(QMC5883L_ADDR);
 bool setupSuccessful = true;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200); // Initialize serial
   delay(1000); // Wait for serial to get ready
 
   // Initialize I2C bus
@@ -42,27 +38,56 @@ void setup() {
     setupSuccessful = false;
   }
 
-  // Debug purposes: scan for I2C devices
-  i2cScan();
+  i2cScan();   // Debug purposes: scan for I2C devices
 
-  // Reading from register 00 of magnetometer
-  // Should output 80 in hex
-  Serial.println(i2cRead(QMC5883L_ADDR, 0x00), HEX);
+  // Configure magnetometer settings
+  setupSuccessful &= myCompass.resetRegisters();
+  setupSuccessful &= myCompass.setMode(qmc5883l::Mode::Continuous);
+  setupSuccessful &= myCompass.setOutputRate(100);
+  setupSuccessful &= myCompass.setOverSampleRate(2);
+  setupSuccessful &= myCompass.setDownSampleRate(4);
+  // TODO: Create this function below in qmc5883l.cpp
+  // setupSuccessful &= bool setSetResetMode(uint8_t mode = 0b01);
+  setupSuccessful &= myCompass.setRange(2);
 
+  myCompass.calibrate(CALIBRATION_TIME);
+
+  // TODO: Maybe add this to the calibrate function
+  // Serial.print("X min val: ");
+  // Serial.print(myCompass.getMinX());
+  // Serial.print(" ");
+  // Serial.print("X max val: ");
+  // Serial.println(myCompass.getMaxX());
+
+  // Serial.print("Y min val: ");
+  // Serial.print(myCompass.getMinY());
+  // Serial.print(" ");
+  // Serial.print("Y max val: ");
+  // Serial.println(myCompass.getMaxY());
+
+  // Serial.print("Z min val: ");
+  // Serial.print(myCompass.getMinZ());
+  // Serial.print(" ");
+  // Serial.print("Z max val: ");
+  // Serial.println(myCompass.getMaxZ());
+
+  if(!setupSuccessful){
+    Serial.println("Setup failed!");
+  }
 }
 
 void loop() {
-  // Prevents program from running if setup fails
+  // Setup fail condition
   if(!setupSuccessful){
     while(true){}
   }
 
-  // // Testing to see if this actually works
-  if(myCompass.isDRDY() == 1){
-    Serial.println(myCompass.getX(), HEX);
-  } else {
-    Serial.println("Data is not ready!");
-  }
+  // // // Testing to see if this actually works
+  // if(myCompass.isDRDY() == 1){
+  //   Serial.println(myCompass.getXRaw());
+  // } else {
+  //   Serial.println("Data is not ready!");
+  // }
 
-  delay(500);
+  // delay(100);
 }
