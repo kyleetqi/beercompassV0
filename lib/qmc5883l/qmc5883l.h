@@ -21,12 +21,6 @@ class qmc5883l {
         address = myAddr;
     };
 
-    struct CalibrationData {
-        int maxX;
-        int maxY;
-        int maxZ;
-    };
-
     enum class Mode : uint8_t {
         Suspend = 0b00,
         Normal = 0b01,
@@ -34,12 +28,24 @@ class qmc5883l {
         Continuous = 0b11,
     };
 
-    /** @brief Sets the magnetometer's data output mode
-     *  @param mode The desired mode
-     *  @return Returns true if mode was set successfully
+    /** 
+     * @brief Sets the magnetometer's data output mode.
+     * @param mode Magnetometer mode.
+     * @return true if the configuration is successful, false otherwise.
      */
     bool setMode(Mode mode);
+
+    /**
+     * @brief Sets the magnetometer's data output frequency.
+     * @param odr Output data rate in Hz. Valid values: 10, 50, 100, 200. Default value is 100.
+     * @return true if the configuration is successful, false otherwise.
+     */
     bool setOutputRate(uint8_t odr = 100);
+
+    /**
+     * @brief Sets the magnetometer's over sample rate.
+     * @param 
+     */
     bool setOverSampleRate(uint8_t osr1 = 2);
     bool setDownSampleRate(uint8_t osr2 = 4);
 
@@ -47,38 +53,55 @@ class qmc5883l {
     bool setRange(uint8_t rng = 0b11);
     bool resetRegisters();
 
-    /** @brief Tells you if the magnetometer has data ready
-     *  @return The status of the magnetometer
+    /** 
+     * @brief Tells you if the magnetometer has data ready
+     * @return The status of the magnetometer
      */
     bool isDRDY();
 
     bool isOVFL();
 
-    /** @brief Calculates the maximum readings in the X, Y, and Z axis
+    /** 
+     * @brief Calculates the maximum readings in the X, Y, and Z axis
      * @param calibrationTime calibration is complete when no new values for this amount of time
      * 
      */
-    CalibrationData calibrate(int calibrationTime);
+    void calibrate(int calibrationTime);
 
-    /** @brief Obtains the magnetometer's reading in the X axis
+    /** 
+     * @brief Obtains the magnetometer's reading in the X axis
      * 
      */
-    uint16_t getX();
+    int16_t getXRaw();
 
-    /** @brief Obtains the magnetometer's reading in the Y axis
+    /** 
+     * @brief Obtains the magnetometer's reading in the Y axis
      * 
      */
-    uint16_t getY();
+    int16_t getYRaw();
 
-    /* @brief Obtains the magnetometer's reading in the Z axis
+    /**
+    * @brief Obtains the magnetometer's reading in the Z axis
     *
     */
-    uint16_t getZ();
+    int16_t getZRaw();
 
-    float getXNormalized();
-    float getYNormalized();
-    float getZNormalized();
+    float getX();
+    float getY();
+    float getZ();
     float getTemperature(); // TODO: Determine return type of temp sensor
+
+    // I don't think these functions are necessary
+    // void setMaxX(int16_t val){this->maxX = val;}
+    // void setMaxY(int16_t val){this->maxY = val;}
+    // void setMaxZ(int16_t val){this->maxZ = val;}
+
+    int16_t getMaxX(){return this->maxX;}
+    int16_t getMaxY(){return this->maxY;}
+    int16_t getMaxZ(){return this->maxZ;}
+    int16_t getMinX(){return this->minX;}
+    int16_t getMinY(){return this->minY;}
+    int16_t getMinZ(){return this->minZ;}
 
     private:
 
@@ -87,10 +110,15 @@ class qmc5883l {
      */
     uint8_t address;
 
+    int16_t maxX, maxY, maxZ;
+    int16_t minX, minY, minZ;
+
     /** 
      * @brief Normalize result to value between -1 and 1
      */
-    float normalize(float val);
+    float normalize(int16_t val, int16_t maxVal, int16_t minVal);
+
+    int16_t getReading(uint8_t msbReg, uint8_t lsbReg);
 };
 
 #endif
