@@ -84,6 +84,7 @@ class qmc5883l {
     bool isDRDY();
 
     // TODO: Create Doxygen
+    // TODO: Implement this function
     bool isOVFL();
 
     /** 
@@ -93,25 +94,39 @@ class qmc5883l {
     void calibrate(int calibrationTime);
 
     /** 
-     * @brief Obtains the magnetometer's raw reading in the X axis.
-     * @return The magnetometer's raw reading in the X axis.
+     * @brief Reads the magnetometer's raw reading in the X axis.
+     * @return The magnetometer's raw X axis reading.
      */
     int16_t getXRaw();
 
     /** 
-     * @brief Obtains the magnetometer's raw reading in the Y axis.
-     * @return The magnetometer's raw reading in the Y axis.
+     * @brief Reads the magnetometer's raw Y axis reading.
+     * @return The magnetometer's raw Y axis reading.
      */
     int16_t getYRaw();
 
     /**
-    * @brief Obtains the magnetometer's raw reading in the Z axis.
-    * @return The magnetometer's raw reading in the Z axis.
+    * @brief Reads the magnetometer's raw Z axis reading.
+    * @return The magnetometer's raw Y axis reading.
     */
     int16_t getZRaw();
 
+    /**
+     * @brief Calculates the magnetometer's X axis reading normalized using its max/min values.
+     * @return The magnetometer's normalized X axis reading.
+     */
     float getX();
+
+    /**
+     * @brief Calculates the magnetometer's Y axis reading normalized using its max/min values.
+     * @return The magnetometer's normalized Y axis reading.
+     */
     float getY();
+
+    /**
+     * @brief Calculates the magnetometer's Y axis reading normalized using its max/min values.
+     * @return The magnetometer's normalized Y axis reading.
+     */
     float getZ();
 
     // TODO: Determine return type of temp sensor.
@@ -123,28 +138,74 @@ class qmc5883l {
     // void setMaxY(int16_t val){this->maxY = val;}
     // void setMaxZ(int16_t val){this->maxZ = val;}
 
+    /**
+     * @brief Obtain the magnetometer's maximum X axis reading.
+     * @return The magnetometer's maximum X axis reading.
+     */
     int16_t getMaxX(){return this->maxX;}
+
+    /**
+     * @brief Obtain the magnetometer's maximum Y axis reading.
+     * @return The magnetometer's maximum Y axis reading.
+     */ 
     int16_t getMaxY(){return this->maxY;}
+
+    /**
+     * @brief Obtain the magnetometer's maximum Z axis reading.
+     * @return The magnetometer's maximum Z axis reading.
+     */    
     int16_t getMaxZ(){return this->maxZ;}
+
+    /**
+     * @brief Obtain the magnetometer's minimum X axis reading.
+     * @return The magnetometer's minimum X axis reading.
+     */
     int16_t getMinX(){return this->minX;}
+
+    /**
+     * @brief Obtain the magnetometer's minimum Y axis reading.
+     * @return The magnetometer's minimum Y axis reading.
+     */
     int16_t getMinY(){return this->minY;}
+
+    /**
+     * @brief Obtain the magnetometer's minimum Z axis reading.
+     * @return The magnetometer's minimum Z axis reading.
+     */
     int16_t getMinZ(){return this->minZ;}
 
     private:
 
     /** 
-     * @brief I2C address of the device
+     * @brief I2C address of the device.
      */
     uint8_t address;
 
+    /**
+     * @brief Maximum magnetometer reading in the indicated axis.
+     */
     int16_t maxX, maxY, maxZ;
+
+     /**
+     * @brief Minimum magnetometer reading in the indicated axis.
+     */
     int16_t minX, minY, minZ;
 
     /** 
-     * @brief Normalize result to value between -1 and 1
+     * @brief Normalize magnetometer reading to a value between -1 and 1.
+     * @param val The magnetometer reading to be normalized.
+     * @param maxVal The maximum reading in the desired axis.
+     * @param minVal The minimum reading in the desired axis.
+     * @return The value normalized using the minimum and maximum values.
      */
     float normalize(int16_t val, int16_t maxVal, int16_t minVal);
 
+    /**
+     * @brief Obtains the magnetometer reading for a desired axis.
+     * @param msbReg The Most Significant Bit register of the axis.
+     * @param lsbReg The Least Significant Bit register of the axis.
+     * @return The reading of the axis register.
+     */
     int16_t getReading(uint8_t msbReg, uint8_t lsbReg);
 };
 
