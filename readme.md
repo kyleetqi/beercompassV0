@@ -14,7 +14,7 @@ flowchart LR
 
 %% Main non-hardware libraries
 main[Main Application] --> utils[Utility Library]
-main --> arduino[Arduino Standard Library]
+main --> arduino((Arduino Standard Library))
 main --> locations[Liquor Store Locations]
 
 %% Main IC libraries
@@ -39,8 +39,8 @@ neo6m --> arduino
 neo6m --> serial
 
 %% I2C libraries
-i2c --> wire[Arduino I2C Handler]
-i2c --> bitops[Bit operations Library]
+i2c --> wire((Arduino I2C Library (Wire.h)))
+i2c --> bitops[Bit Operations Library]
 
 %% Serial libraries
 serial --> arduino
