@@ -39,7 +39,7 @@ neo6m --> arduino
 neo6m --> serial
 
 %% I2C libraries
-i2c --> wire((Arduino I2C Library (Wire.h)))
+i2c --> wire((Arduino I2C Library, Wire.h))
 i2c --> bitops[Bit Operations Library]
 
 %% Serial libraries
