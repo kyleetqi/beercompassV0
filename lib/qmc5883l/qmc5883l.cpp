@@ -108,6 +108,14 @@ bool qmc5883l::resetRegisters(){
     return i2cWrite(this->address, CTRLB_REG, current);
 }
 
+bool qmc5883l::isDRDY(){
+    return (i2cRead(this->address, STATUS_REG) & 1);
+}
+
+// TODO: Make this function
+bool isOVFL(){
+}
+
 void qmc5883l::calibrate(int calibrationTime){
     // Stores the max and min magnetometer reading
     int16_t minMaxReadings[3][2] = {
@@ -171,23 +179,18 @@ void qmc5883l::calibrate(int calibrationTime){
     Serial.println(this->maxZ);
 }
 
-bool qmc5883l::isDRDY(){
-    return (i2cRead(this->address, STATUS_REG) & 1);
-}
-
-// TODO: Make this function
-bool isOVFL(){
-}
-
-int16_t qmc5883l::getReading(uint8_t msbReg, uint8_t lsbReg){
-    uint8_t msb = i2cRead(this->address, msbReg);
-    uint8_t lsb = i2cRead(this->address, lsbReg);
-    return (int16_t)((msb << 8) | lsb); 
-}
-
 int16_t qmc5883l::getXRaw() {return getReading(XMSB_REG, XLSB_REG);}
 int16_t qmc5883l::getYRaw() {return getReading(YMSB_REG, YLSB_REG);}
 int16_t qmc5883l::getZRaw() {return getReading(ZMSB_REG, ZLSB_REG);}
+
+float qmc5883l::getX() {return normalize(getXRaw(), this->maxX, this->minX);}
+float qmc5883l::getY() {return normalize(getYRaw(), this->maxY, this->minY);}
+float qmc5883l::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
+
+// TODO: Implement this function
+float qmc5883l::getTemperature(){
+    return 1.0;
+}
 
 float qmc5883l::normalize(int16_t val, int16_t maxVal, int16_t minVal) {
     float center = (maxVal + minVal)/2.0f;
@@ -195,6 +198,8 @@ float qmc5883l::normalize(int16_t val, int16_t maxVal, int16_t minVal) {
     return (val - center)/ halfRange;
 }
 
-float qmc5883l::getX() {return normalize(getXRaw(), this->maxX, this->minX);}
-float qmc5883l::getY() {return normalize(getYRaw(), this->maxY, this->minY);}
-float qmc5883l::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
+int16_t qmc5883l::getReading(uint8_t msbReg, uint8_t lsbReg){
+    uint8_t msb = i2cRead(this->address, msbReg);
+    uint8_t lsb = i2cRead(this->address, lsbReg);
+    return (int16_t)((msb << 8) | lsb); 
+}
