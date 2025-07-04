@@ -50,5 +50,4 @@ serial --> arduino
 <ul>
     <li> Rectangles denote logic libraries. Portable with minimal modification. </li>
     <li> Circles denote hardware interfacing libraries. Requires heavy modification when changing frameworks. </li>
-
 </ul>
