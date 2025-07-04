@@ -10,8 +10,10 @@ Tgus versuib us developed on an ESP32 using the Arduino framework. To enhance po
 
 ```mermaid
 
+flowchart TD
+
 %% Main non-hardware libraries
-main[Main Application] --> utils[Utils Library]
+main[Main Application] --> utils[Utility Library]
 main --> arduino[Arduino Standard Library]
 main --> locations[Liquor Store Locations]
 
@@ -40,7 +42,5 @@ i2c --> bitops[Bit operations Library]
 
 %% Serial libraries
 serial --> arduino
-
-flowchart TD
 
 ```
