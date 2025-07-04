@@ -1,16 +1,46 @@
 # Beer Compass
 
-A compass that always points you to the nearest beer store using the Arduino framework, developed on Platform IO. This code is written for the debug/development version of the project, which uses breadboarding and breakout boards. A second generation version of this project is also under development that harmonizes the electronics on a custom PCB.
+A compass built with the Arduino framework that always points to the nearest liquor store. This repository contains the firmware for version 0 of the project, which uses breakout boards and breadboards. Version 1 will feature a custom PCB design, but the firmware will remain largely the same since the same ICs will be used. (At least, that's the plan at the time of writing.)
 
-# A Note About Code Organization
+# Project Organization
 
-This version of the project is being developed using the Arduino framework on an ESP32 chip. In order to provide ease of portability to other chips, code has been organized between hardware interfacing and abstracted code.
+Tgus versuib us developed on an ESP32 using the Arduino framework. To enhance portability, the code is structured to separate hardware interfacing from the high level logic. Wrapper libraries handle I2C, SPI, and Serial communications. The IC libraries and main application avoid direct hardware calls, so if the project moves to another language or framework, only the hardware wrappers need modification, keeping the rest of the code untouched.
 
-This decision was motivated by the fact that the ESP32 consumes over 100 mA, and provides features not necessary for this project such as Bluetooth and Wifi. This version of the project uses the ESP32 because it's super quick and simple to use the Arduino framework to get a prototype going, but the next version requires a more optimized microcontroller. The second version of this project will likely use a low power STM32 chip to provide better battery life since I plan to make this a handheld device.
+## Library Structure
 
-<ul>
-    <li> Hardware interfacing functions are located in HardwareWrapper.h/cpp </li>
-    <li> Hardware interfacing code required for the sensors are located in their respective library files. </li>
-    <li> utils.h/cpp is used purely for math, logic, and other helper functions and contains no hardware interfacing code. </li>
-    <li> main.cpp is completely abstracted and does not contain any hardware interfacing code. </li>
-</ul>
+```mermaid
+
+%% Main non-hardware libraries
+main[Main Application] --> utils[Utils Library]
+main --> arduino[Arduino Standard Library]
+main --> locations[Liquor Store Locations]
+
+%% Main IC libraries
+main --> mpu6500[MPU6500 Library]
+main --> qmc5883l[QMC5883L Library]
+main --> neo6m[Neo-6M Library]
+
+%% Main hardware interfacing libraries
+main --> serial[Serial Handler]
+main --> i2c[I2C Handler]
+
+%% MPU6500 libraries
+mpu6500 --> arduino
+mpu6500 --> i2c
+
+%% QMC5883L libraries
+
+%% Neo-6M libraries
+neo6m --> arduino
+neo6m --> serial
+
+%% I2C libraries
+i2c --> wire[Arduino I2C Handler]
+i2c --> bitops[Bit operations Library]
+
+%% Serial libraries
+serial --> arduino
+
+flowchart TD
+
+```
