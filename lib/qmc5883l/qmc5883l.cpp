@@ -2,7 +2,7 @@
 #include "i2c_handler.h"
 #include "bit_ops.h"
 
-bool qmc5883l::setMode(Mode mode){
+bool QMC5883L::setMode(Mode mode){
     uint8_t current = i2cRead(this->address, CTRLA_REG);
 
     // TODO: I might remove this block of code
@@ -25,7 +25,7 @@ bool qmc5883l::setMode(Mode mode){
     return i2cWrite(this->address, CTRLA_REG, current);
 }
     
-bool qmc5883l::setOutputRate(uint8_t odr){
+bool QMC5883L::setOutputRate(uint8_t odr){
     // Set bits based on mode selected
     uint8_t bits;
     switch(odr){
@@ -43,7 +43,7 @@ bool qmc5883l::setOutputRate(uint8_t odr){
     return i2cWrite(this->address, CTRLA_REG, current);
 }
 
-bool qmc5883l::setOverSampleRate(uint8_t osr1){
+bool QMC5883L::setOverSampleRate(uint8_t osr1){
     // Set bits based on mode selected
     uint8_t bits;
     switch(osr1){
@@ -61,7 +61,7 @@ bool qmc5883l::setOverSampleRate(uint8_t osr1){
     return i2cWrite(this->address, CTRLA_REG, current);
 }
 
-bool qmc5883l::setDownSampleRate(uint8_t osr2){
+bool QMC5883L::setDownSampleRate(uint8_t osr2){
     // Set bits based on mode selected
     uint8_t bits;
     switch(osr2){
@@ -80,11 +80,11 @@ bool qmc5883l::setDownSampleRate(uint8_t osr2){
 }
 
 // TODO: Implement this function
-bool qmc5883l::setSetResetMode(uint8_t mode){
-
+bool QMC5883L::setSetResetMode(uint8_t mode){
+    return true;
 }
 
-bool qmc5883l::setRange(uint8_t rng){
+bool QMC5883L::setRange(uint8_t rng){
     // Set bits based on mode selected
     uint8_t bits;
     switch(rng){
@@ -102,21 +102,22 @@ bool qmc5883l::setRange(uint8_t rng){
     return i2cWrite(this->address, CTRLB_REG, current);
 }
 
-bool qmc5883l::resetRegisters(){
+bool QMC5883L::resetRegisters(){
     uint8_t current = i2cRead(this->address, CTRLB_REG);
     writeBits(current, 0b10000000, 0b10000000);
     return i2cWrite(this->address, CTRLB_REG, current);
 }
 
-bool qmc5883l::isDRDY(){
+bool QMC5883L::isDRDY(){
     return (i2cRead(this->address, STATUS_REG) & 1);
 }
 
 // TODO: Make this function
 bool isOVFL(){
+    return true;
 }
 
-void qmc5883l::calibrate(int calibrationTime){
+void QMC5883L::calibrate(int calibrationTime){
     // Stores the max and min magnetometer reading
     int16_t minMaxReadings[3][2] = {
         {INT16_MAX, INT16_MIN},
@@ -179,26 +180,26 @@ void qmc5883l::calibrate(int calibrationTime){
     Serial.println(this->maxZ);
 }
 
-int16_t qmc5883l::getXRaw() {return getReading(XMSB_REG, XLSB_REG);}
-int16_t qmc5883l::getYRaw() {return getReading(YMSB_REG, YLSB_REG);}
-int16_t qmc5883l::getZRaw() {return getReading(ZMSB_REG, ZLSB_REG);}
+int16_t QMC5883L::getXRaw() {return getReading(XMSB_REG, XLSB_REG);}
+int16_t QMC5883L::getYRaw() {return getReading(YMSB_REG, YLSB_REG);}
+int16_t QMC5883L::getZRaw() {return getReading(ZMSB_REG, ZLSB_REG);}
 
-float qmc5883l::getX() {return normalize(getXRaw(), this->maxX, this->minX);}
-float qmc5883l::getY() {return normalize(getYRaw(), this->maxY, this->minY);}
-float qmc5883l::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
+float QMC5883L::getX() {return normalize(getXRaw(), this->maxX, this->minX);}
+float QMC5883L::getY() {return normalize(getYRaw(), this->maxY, this->minY);}
+float QMC5883L::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
 
 // TODO: Implement this function
-float qmc5883l::getTemperature(){
+float QMC5883L::getTemperature(){
     return 1.0;
 }
 
-float qmc5883l::normalize(int16_t val, int16_t maxVal, int16_t minVal) {
+float QMC5883L::normalize(int16_t val, int16_t maxVal, int16_t minVal) {
     float center = (maxVal + minVal)/2.0f;
     float halfRange = (maxVal - minVal)/2.0f;
     return (val - center)/ halfRange;
 }
 
-int16_t qmc5883l::getReading(uint8_t msbReg, uint8_t lsbReg){
+int16_t QMC5883L::getReading(uint8_t msbReg, uint8_t lsbReg){
     uint8_t msb = i2cRead(this->address, msbReg);
     uint8_t lsb = i2cRead(this->address, lsbReg);
     return (int16_t)((msb << 8) | lsb); 

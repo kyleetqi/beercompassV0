@@ -1,5 +1,5 @@
-#ifndef HMC5883L_H
-#define HMC5883L_H
+#ifndef QMC5883L_H
+#define QMC5883L_H
 
 #include <Arduino.h>
 
@@ -14,17 +14,18 @@
 #define CTRLA_REG 0x0A
 #define CTRLB_REG 0x0B
 
-class qmc5883l {
+class QMC5883L{
     public:
 
     /**
      * @brief Class constructor.
      * @param myAddr The I2C address of the object.
      */
-    qmc5883l(uint8_t myAddr){
-        address = myAddr;
-    };
+    QMC5883L(uint8_t myAddr) : address(myAddr) {}
 
+    /**
+     * @brief Operating modes for the magnetometer.
+     */
     enum class Mode : uint8_t {
         Suspend = 0b00,
         Normal = 0b01,
@@ -60,8 +61,9 @@ class qmc5883l {
      */
     bool setDownSampleRate(uint8_t osr2 = 4);
 
-    // TODO: This lol
+    // TODO: Implement this function
     // Make sure the default value makes sense
+    // Might create a class enum
     bool setSetResetMode(uint8_t mode = 0b01);
 
     /**
@@ -130,7 +132,7 @@ class qmc5883l {
     float getZ();
 
     // TODO: Determine return type of temp sensor.
-    // Also idk if the qmc5883l actually has a temp sensor.
+    // Also idk if the QMC5883L actually has a temp sensor.
     float getTemperature();
 
     // I don't think these functions are necessary
