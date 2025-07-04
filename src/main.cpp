@@ -18,11 +18,11 @@
 #define I2C_FREQ 100000 // I2C clock speed, standard mode (HZ)
 
 // Magnetometer global declarations
-#define QMC5883L_ADDR 0x2C // I2C address of qmc5883l
+#define QMC5883L_ADDR 0x2C // I2C address of QMC5883L
 #define CALIBRATION_TIME 5000 
 
 // Create magnetometer object
-qmc5883l myCompass = qmc5883l(QMC5883L_ADDR);
+QMC5883L myCompass(QMC5883L_ADDR);
 
 // Keeps track of setup errors
 bool setupSuccessful = true;
@@ -42,7 +42,7 @@ void setup() {
 
   // Configure magnetometer settings
   setupSuccessful &= myCompass.resetRegisters();
-  setupSuccessful &= myCompass.setMode(qmc5883l::Mode::Continuous);
+  setupSuccessful &= myCompass.setMode(QMC5883L::Mode::Continuous);
   setupSuccessful &= myCompass.setOutputRate(100);
   setupSuccessful &= myCompass.setOverSampleRate(2);
   setupSuccessful &= myCompass.setDownSampleRate(4);
@@ -71,14 +71,13 @@ void setup() {
   // Serial.print("Z max val: ");
   // Serial.println(myCompass.getMaxZ());
 
-  if(!setupSuccessful){
-    Serial.println("Setup failed!");
-  }
+
 }
 
 void loop() {
   // Setup fail condition
   if(!setupSuccessful){
+    Serial.println("Setup failed!");
     while(true){}
   }
 
