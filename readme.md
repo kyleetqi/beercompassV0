@@ -31,6 +31,8 @@ mpu6500 --> arduino
 mpu6500 --> i2c
 
 %% QMC5883L libraries
+qmc5883l --> i2c
+qmc5883l --> arduino
 
 %% Neo-6M libraries
 neo6m --> arduino
@@ -44,3 +46,9 @@ i2c --> bitops[Bit operations Library]
 serial --> arduino
 
 ```
+
+<ul>
+    <li> Rectangles denote logic libraries. Portable with minimal modification. </li>
+    <li> Circles denote hardware interfacing libraries. Requires heavy modification when changing frameworks. </li>
+
+</ul>
