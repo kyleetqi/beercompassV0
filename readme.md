@@ -10,7 +10,7 @@ This version is developed on an ESP32 using the Arduino framework. To enhance po
 
 ```mermaid
 
-flowchart TD
+flowchart LR
 
 %% Main non-hardware libraries
 main[Main Application] --> utils[Utility Library]
