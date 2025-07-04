@@ -4,7 +4,7 @@ A compass built with the Arduino framework that always points to the nearest liq
 
 # Project Organization
 
-Tgus versuib us developed on an ESP32 using the Arduino framework. To enhance portability, the code is structured to separate hardware interfacing from the high level logic. Wrapper libraries handle I2C, SPI, and Serial communications. The IC libraries and main application avoid direct hardware calls, so if the project moves to another language or framework, only the hardware wrappers need modification, keeping the rest of the code untouched.
+This version is developed on an ESP32 using the Arduino framework. To enhance portability, the code is structured to separate hardware interfacing from the high level logic. Wrapper libraries handle I2C, SPI, and Serial communications. The IC libraries and main application avoid direct hardware calls, so if the project moves to another language or framework, only the hardware wrappers need modification, keeping the rest of the code untouched.
 
 ## Library Structure
 
