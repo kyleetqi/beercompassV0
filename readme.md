@@ -14,7 +14,6 @@ flowchart LR
 
 %% Main non-hardware libraries
 main[Main Application] --> utils[Utility Library]
-main --> arduino([Arduino Standard Library])
 main --> locations[Liquor Store Locations]
 
 %% Main IC libraries
@@ -27,15 +26,12 @@ main --> serial(Serial Handler)
 main --> i2c(I2C Handler)
 
 %% MPU6500 libraries
-mpu6500 --> arduino
 mpu6500 --> i2c
 
 %% QMC5883L libraries
 qmc5883l --> i2c
-qmc5883l --> arduino
 
 %% Neo-6M libraries
-neo6m --> arduino
 neo6m --> serial
 
 %% I2C libraries
@@ -43,7 +39,6 @@ i2c --> wire([Wire.h])
 i2c --> bitops[Bit Ops Library]
 
 %% Serial libraries
-serial --> arduino
 
 ```
 
@@ -52,4 +47,6 @@ serial --> arduino
     <li> Rounded rectangles denote hardware wrappers. Requires heavy modification when changing frameworks. </li>
     <li>    Pill shapes represent libraries that will have to be replaced entirely if shifting frameworks,
             (i.e., Arduino libraries.) For example, moving to STM32 will replace these with the HAL functions.</li>
+    <li>    Arduino.h is omitted from the flowchart since it is called in virtually every applcation.
+            It's equivalent to a platform's standard library. </li>
 </ul>
