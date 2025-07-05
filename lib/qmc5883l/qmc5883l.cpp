@@ -2,28 +2,12 @@
 #include "i2c_handler.h"
 #include "bit_ops.h"
 
-bool QMC5883L::setMode(Mode mode){
-    uint8_t current = i2cRead(this->address, CTRLA_REG);
+QMC5883L::QMC5883L(uint8_t myAddress) : address(myAddress) {}
 
-    // TODO: I might remove this block of code
-    // Early return if mode is already set properly
-    if(readBits(current, 0b11) == static_cast<uint8_t>(mode)){
-        return true;
-    }
-
-    // Mode must be set to suspend between different modes
-    if (readBits(current, 0b11) != 0b00){
-        current = writeBits(current, 0b00, 0b11);
-        if (!i2cWrite(this->address, CTRLA_REG, current)){
-            return false;
-        }
-        delay(100);
-    }
-
-    // Write to registers
-    current = writeBits(current, static_cast<uint8_t>(mode), 0b11);
-    return i2cWrite(this->address, CTRLA_REG, current);
-}
+bool QMC5883L::suspend(){return setMode(0b00);}
+bool QMC5883L::setModeNormal(){return setMode(0b01);}
+bool QMC5883L::setModeSingle(){return setMode(0b10);}
+bool QMC5883L::setModeContinuous(){return setMode(0b11);}
     
 bool QMC5883L::setOutputRate(uint8_t odr){
     // Set bits based on mode selected
@@ -102,6 +86,10 @@ bool QMC5883L::setRange(uint8_t rng){
     return i2cWrite(this->address, CTRLB_REG, current);
 }
 
+bool QMC5883L::modeSetResetOn(){return setSetResetMode(0b00);}
+bool QMC5883L::modeSetOn(){return setSetResetMode(0b01);}
+bool QMC5883L::modeSetResetOff(){return setSetResetMode(0b10);}
+
 bool QMC5883L::resetRegisters(){
     uint8_t current = i2cRead(this->address, CTRLB_REG);
     writeBits(current, 0b10000000, 0b10000000);
@@ -109,12 +97,11 @@ bool QMC5883L::resetRegisters(){
 }
 
 bool QMC5883L::isDRDY(){
-    return (i2cRead(this->address, STATUS_REG) & 1);
+    return (i2cRead(this->address, STATUS_REG) & 0b01) != 0;
 }
 
-// TODO: Make this function
-bool isOVFL(){
-    return true;
+bool QMC5883L::isOVFL(){
+    return (i2cRead(this->address, STATUS_REG) & 0b10) != 0;
 }
 
 void QMC5883L::calibrate(int calibrationTime){
@@ -191,6 +178,34 @@ float QMC5883L::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
 // TODO: Implement this function
 float QMC5883L::getTemperature(){
     return 1.0;
+}
+
+bool QMC5883L::setMode(uint8_t bits){
+    uint8_t current = i2cRead(this->address, CTRLA_REG);
+
+    // Early return if mode is already set properly
+    if(readBits(current, 0b11) == bits){
+        return true;
+    }
+
+    // Mode must be set to suspend between different modes
+    if (readBits(current, 0b11) != 0b00){
+        current = writeBits(current, 0b00, 0b11);
+        if (!i2cWrite(this->address, CTRLA_REG, current)){
+            return false;
+        }
+        delay(100);
+    }
+
+    // Write to registers
+    current = writeBits(current, bits, 0b11);
+    return i2cWrite(this->address, CTRLA_REG, current);
+}
+
+bool QMC5883L::setSetResetMode(uint8_t bits){
+    uint8_t current = i2cRead(this->address, CTRLB_REG);
+    current = writeBits(current, bits, 0b11);
+    return i2cWrite(this->address, CTRLB_REG, current);
 }
 
 float QMC5883L::normalize(int16_t val, int16_t maxVal, int16_t minVal) {
