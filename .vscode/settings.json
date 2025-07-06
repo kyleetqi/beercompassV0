@@ -17,7 +17,21 @@
         "functional": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "initializer_list": "cpp",
+        "atomic": "cpp",
+        "cstddef": "cpp",
+        "cstdio": "cpp",
+        "cstring": "cpp",
+        "cwchar": "cpp",
+        "memory": "cpp",
+        "memory_resource": "cpp",
+        "stdexcept": "cpp",
+        "typeinfo": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
