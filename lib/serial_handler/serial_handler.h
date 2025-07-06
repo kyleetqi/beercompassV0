@@ -8,29 +8,38 @@ class SerialPort{
 
     /**
      * @brief Class constructor.
-     * @param uartNum TBD
-     * @param txPin TBD
-     * @param rxPin TBD
+     * @param uartNum UART port number.
+     * @param txPin MCU TX pin.
+     * @param rxPin MCU RX pin.
      */
-    SerialPort(uint8_t uartNum, uint8_t txPin, uint8_t rxPin);
+    SerialPort(uint8_t myUartNum, uint8_t myTxPin, uint8_t myRxPin);
 
     /**
-     * @brief TBD
-     * @param baudRate TBD
+     * @brief Initializes the serial port.
+     * @param baudRate Desired BAUD rate (bits per second).
+     * @return True if initialization succeeded, false otherwise.
      */
-    void begin(uint32_t baudRate = 9600);
+    bool begin(uint32_t baudRate = 9600);
+
+    /**
+     * @brief Tells you if the serial port is valid.
+     * @return True if the serial port is valid, false otherwise.
+     */
+    bool isValid();
 
     /**
      * @brief TBD
      * @param data TBD
+     * @return True if printing succeeded, false otherwise.
      */
-    void print(const String& data);
+    bool print(const String& data);
 
     /**
      * @brief TBD
      * @param data TBD
+     * @return True if printing succeeded, false otherwise.
      */
-    void println(const String& data);
+    bool println(const String& data);
 
     /**
      * @brief TBD
@@ -49,15 +58,14 @@ class SerialPort{
      * @param data TBD
      * @return TBD
      */
-    void write(uint8_t data);
+    size_t write(uint8_t data);
 
     private:
 
-    uint8_t _uartNum;
-    uint8_t _txPin;
-    uint8_t _rxPin;
-    HardwareSerial* _serial;
-
+    uint8_t uartNum;
+    uint8_t txPin;
+    uint8_t rxPin;
+    HardwareSerial* serial;
 };
 
 #endif
