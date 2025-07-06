@@ -143,23 +143,47 @@ void QMC5883L::calibrate(int calibrationTime){
     this->minZ = minMaxReadings[2][0];
 
     // Write values to serial
-    Serial.print("X min val: ");
+    // Serial.print("X min val: ");
+    // Serial.print(this->minX);
+    // Serial.print(" ");
+    // Serial.print("X max val: ");
+    // Serial.println(this->maxX);
+
+    // Serial.print("Y min val: ");
+    // Serial.print(this->minY);
+    // Serial.print(" ");
+    // Serial.print("Y max val: ");
+    // Serial.println(this->maxY);
+
+    // Serial.print("Z min val: ");
+    // Serial.print(this->minZ);
+    // Serial.print(" ");
+    // Serial.print("Z max val: ");
+    // Serial.println(this->maxZ);
+
+    Serial.println("If you want to hardcode debug values, add this to main:");
+    Serial.print("<yourCompassName>.setCalibrationData(");
+    Serial.print(this->maxX);
+    Serial.print(", ");
+    Serial.print(this->maxY);
+    Serial.print(", ");
+    Serial.print(this->maxZ);
+    Serial.print(", ");
     Serial.print(this->minX);
-    Serial.print(" ");
-    Serial.print("X max val: ");
-    Serial.println(this->maxX);
-
-    Serial.print("Y min val: ");
+    Serial.print(", ");
     Serial.print(this->minY);
-    Serial.print(" ");
-    Serial.print("Y max val: ");
-    Serial.println(this->maxY);
-
-    Serial.print("Z min val: ");
+    Serial.print(", ");
     Serial.print(this->minZ);
-    Serial.print(" ");
-    Serial.print("Z max val: ");
-    Serial.println(this->maxZ);
+    Serial.print(");");
+}
+
+void QMC5883L::setCalibrationData(int16_t maxX, int16_t maxY, int16_t maxZ, int16_t minX, int16_t minY, int16_t minZ){
+    this->maxX = maxX;
+    this->maxY = maxY;
+    this->maxZ = maxZ;
+    this->minX = minX;
+    this->minY = minY;
+    this->minZ = minZ;
 }
 
 int16_t QMC5883L::getXRaw() {return getReading(XMSB_REG, XLSB_REG);}

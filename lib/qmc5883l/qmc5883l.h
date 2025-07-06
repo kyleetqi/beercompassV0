@@ -67,7 +67,7 @@ class QMC5883L{
      * @return true if the configuration is successful, false otherwise.
      */
     bool setDownSampleRate(uint8_t osr2 = 4);
-    
+
     /**
      * @brief Sets the magnetometer's magnetic range.
      * @param rng Magnetic range in Gauss. Valid values: 2, 8, 12, 30. Default value is 2.
@@ -117,6 +117,17 @@ class QMC5883L{
      */
     void calibrate(int calibrationTime);
 
+    /**
+     * @brief Manually set magnetometer's maximum/minimum readings for calibration.
+     * @param maxX The maximum reading in the X direction.
+     * @param maxY The maximum reading in the Y direction.
+     * @param maxZ The maximum reading in the Z direction.
+     * @param minX The minimum reading in the X direction.
+     * @param minY The minimum reading in the Y direction.
+     * @param minZ The minimum reading in the Z direction.
+     */
+    void setCalibrationData(int16_t maxX, int16_t maxY, int16_t maxZ, int16_t minX, int16_t minY, int16_t minZ);
+
     /** 
      * @brief Reads the magnetometer's raw reading in the X axis.
      * @return The magnetometer's raw X axis reading.
@@ -155,37 +166,7 @@ class QMC5883L{
 
     // TODO: Implement this function
     // Idk if the QMC5883L actually has a temp sensor.
-    float getTemperature();
-
-    /**
-     * @brief Manually set the maximum X reading.
-     */
-    void setMaxX(int16_t val){this->maxX = val;}
-
-    /**
-     * @brief Manually set the maximum Y reading.
-     */
-    void setMaxY(int16_t val){this->maxY = val;}
-
-    /**
-     * @brief Manually set the maximum Z reading.
-     */
-    void setMaxZ(int16_t val){this->maxZ = val;}
-
-    /**
-     * @brief Manually set the minimum X reading.
-     */
-    void setMinX(int16_t val){this->minX = val;}
-
-    /**
-     * @brief Manually set the minimum Y reading.
-     */
-    void setMinY(int16_t val){this->minY = val;}
-
-    /**
-     * @brief Manually set the minimum Z reading.
-     */
-    void setMinZ(int16_t val){this->minZ = val;}
+    // float getTemperature();
 
     /**
      * @brief Obtain the magnetometer's maximum X axis reading.
@@ -222,6 +203,37 @@ class QMC5883L{
      * @return The magnetometer's minimum Z axis reading.
      */
     int16_t getMinZ(){return this->minZ;}
+
+    // Maybe remove set functions (eventually)
+    /**
+     * @brief Manually set the maximum X reading.
+     */
+    void setMaxX(int16_t val){this->maxX = val;}
+
+    /**
+     * @brief Manually set the maximum Y reading.
+     */
+    void setMaxY(int16_t val){this->maxY = val;}
+
+    /**
+     * @brief Manually set the maximum Z reading.
+     */
+    void setMaxZ(int16_t val){this->maxZ = val;}
+
+    /**
+     * @brief Manually set the minimum X reading.
+     */
+    void setMinX(int16_t val){this->minX = val;}
+
+    /**
+     * @brief Manually set the minimum Y reading.
+     */
+    void setMinY(int16_t val){this->minY = val;}
+
+    /**
+     * @brief Manually set the minimum Z reading.
+     */
+    void setMinZ(int16_t val){this->minZ = val;}
 
     private:
 
