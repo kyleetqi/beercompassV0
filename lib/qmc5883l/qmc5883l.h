@@ -19,26 +19,33 @@ class QMC5883L{
 
     /**
      * @brief Class constructor.
-     * @param myAddr The I2C address of the object.
+     * @param myAddress The I2C address of the object.
      */
-    QMC5883L(uint8_t myAddr) : address(myAddr) {}
+    QMC5883L(uint8_t myAddress);
 
     /**
-     * @brief Operating modes for the magnetometer.
+     * @brief Suspend the magnetometer.
+     * @return true if the operation succeeded, false otherwise.
      */
-    enum class Mode : uint8_t {
-        Suspend = 0b00,
-        Normal = 0b01,
-        Single = 0b10,
-        Continuous = 0b11,
-    };
+    bool suspend();
 
-    /** 
-     * @brief Sets the magnetometer's data output mode.
-     * @param mode Magnetometer mode.
-     * @return true if the configuration is successful, false otherwise.
+    /**
+     * @brief Set the magnetometer to normal mode.
+     * @return true if the operation succeeded, false otherwise.
      */
-    bool setMode(Mode mode);
+    bool setModeNormal();
+
+    /**
+     * @brief Set the magnetometer to single mode.
+     * @return true if the operation succeeded, false otherwise.
+     */
+    bool setModeSingle();
+
+    /**
+     * @brief Set the magnetometer to continuous mode.
+     * @return true if the operation succeeded, false otherwise.
+     */
+    bool setModeContinuous();
 
     /**
      * @brief Sets the magnetometer's data output frequency.
@@ -60,18 +67,31 @@ class QMC5883L{
      * @return true if the configuration is successful, false otherwise.
      */
     bool setDownSampleRate(uint8_t osr2 = 4);
-
-    // TODO: Implement this function
-    // Make sure the default value makes sense
-    // Might create a class enum
-    bool setSetResetMode(uint8_t mode = 0b01);
-
+    
     /**
      * @brief Sets the magnetometer's magnetic range.
      * @param rng Magnetic range in Gauss. Valid values: 2, 8, 12, 30. Default value is 2.
      * @return true if the configuration is successful, false otherwise.
      */
     bool setRange(uint8_t rng = 2);
+
+    /**
+     * @brief Sets the magnetometer's set/reset mode to set and reset on.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool modeSetResetOn();
+
+    /**
+     * @brief Sets the magnetometer's set/reset mode to set on only.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool modeSetOn();
+
+    /**
+     * @brief Sets the magnetometer's set/reset mode to set and reset off.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool modeSetResetOff();
 
     /**
      * @brief Resets the magnetometer's registers to its default values.
@@ -85,8 +105,10 @@ class QMC5883L{
      */
     bool isDRDY();
 
-    // TODO: Create Doxygen
-    // TODO: Implement this function
+    /**
+     * @brief Indicates if the reading exceeds -30,000 to 30,000 LSBs. Register resets when read.
+     * @return true if an output exceeds the range, false otherwise.
+     */
     bool isOVFL();
 
     /** 
@@ -131,14 +153,39 @@ class QMC5883L{
      */
     float getZ();
 
-    // TODO: Determine return type of temp sensor.
-    // Also idk if the QMC5883L actually has a temp sensor.
+    // TODO: Implement this function
+    // Idk if the QMC5883L actually has a temp sensor.
     float getTemperature();
 
-    // I don't think these functions are necessary
-    // void setMaxX(int16_t val){this->maxX = val;}
-    // void setMaxY(int16_t val){this->maxY = val;}
-    // void setMaxZ(int16_t val){this->maxZ = val;}
+    /**
+     * @brief Manually set the maximum X reading.
+     */
+    void setMaxX(int16_t val){this->maxX = val;}
+
+    /**
+     * @brief Manually set the maximum Y reading.
+     */
+    void setMaxY(int16_t val){this->maxY = val;}
+
+    /**
+     * @brief Manually set the maximum Z reading.
+     */
+    void setMaxZ(int16_t val){this->maxZ = val;}
+
+    /**
+     * @brief Manually set the minimum X reading.
+     */
+    void setMinX(int16_t val){this->minX = val;}
+
+    /**
+     * @brief Manually set the minimum Y reading.
+     */
+    void setMinY(int16_t val){this->minY = val;}
+
+    /**
+     * @brief Manually set the minimum Z reading.
+     */
+    void setMinZ(int16_t val){this->minZ = val;}
 
     /**
      * @brief Obtain the magnetometer's maximum X axis reading.
@@ -192,6 +239,20 @@ class QMC5883L{
      * @brief Minimum magnetometer reading in the indicated axis.
      */
     int16_t minX, minY, minZ;
+
+     /** 
+     * @brief Sets the magnetometer's data output mode.
+     * @param bits Bits corresponding to the desired mode.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool setMode(uint8_t bits);
+
+    /**
+     * @brief Sets the magnetometer's set/reset mode.
+     * @param bits Bits corresponding to the desired mode.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool setSetResetMode(uint8_t bits);
 
     /** 
      * @brief Normalize magnetometer reading to a value between -1 and 1.
