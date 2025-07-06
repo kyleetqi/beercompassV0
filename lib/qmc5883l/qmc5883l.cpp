@@ -63,11 +63,6 @@ bool QMC5883L::setDownSampleRate(uint8_t osr2){
     return i2cWrite(this->address, CTRLA_REG, current);
 }
 
-// TODO: Implement this function
-bool QMC5883L::setSetResetMode(uint8_t mode){
-    return true;
-}
-
 bool QMC5883L::setRange(uint8_t rng){
     // Set bits based on mode selected
     uint8_t bits;
