@@ -194,6 +194,12 @@ float QMC5883L::getX() {return normalize(getXRaw(), this->maxX, this->minX);}
 float QMC5883L::getY() {return normalize(getYRaw(), this->maxY, this->minY);}
 float QMC5883L::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
 
+float QMC5883L::azimuth(int16_t normX, int16_t normY){
+    float angle = atan2(normY, normX); // Obtain angle in radians
+    angle *= RAD_TO_DEG; // Convert to degrees
+    return fmod(450-angle, 360); // Change to compass angle convention
+}
+
 // TODO: Implement this function
 float QMC5883L::getTemperature(){
     return 1.0;

@@ -14,6 +14,9 @@
 #define CTRLA_REG 0x0A
 #define CTRLB_REG 0x0B
 
+// Multiply to convert radians to degrees
+#define RAD_TO_DEG 57.29577951308232 // 180/PI
+
 class QMC5883L{
     public:
 
@@ -164,9 +167,20 @@ class QMC5883L{
      */
     float getZ();
 
+    /**
+     * @brief Calculates the azimuth/heading of the compass.
+     * @param normX The normalized X reading of the magnetometer [-1,1].
+     * @param normY The normalized Y reading of the magnetometer [-1,1].
+     * @return The magnetometer azimuth/heading in degrees.
+     */
+    float azimuth(int16_t normX, int16_t normY);
+
     // TODO: Implement this function
-    // Idk if the QMC5883L actually has a temp sensor.
-    // float getTemperature();
+    /**
+     * @brief Returns the temperature reading of the magnetometer
+     * @return the temperature of the magnetometer
+     */
+    float getTemperature();
 
     /**
      * @brief Obtain the magnetometer's maximum X axis reading.
@@ -203,37 +217,6 @@ class QMC5883L{
      * @return The magnetometer's minimum Z axis reading.
      */
     int16_t getMinZ(){return this->minZ;}
-
-    // Maybe remove set functions (eventually)
-    /**
-     * @brief Manually set the maximum X reading.
-     */
-    void setMaxX(int16_t val){this->maxX = val;}
-
-    /**
-     * @brief Manually set the maximum Y reading.
-     */
-    void setMaxY(int16_t val){this->maxY = val;}
-
-    /**
-     * @brief Manually set the maximum Z reading.
-     */
-    void setMaxZ(int16_t val){this->maxZ = val;}
-
-    /**
-     * @brief Manually set the minimum X reading.
-     */
-    void setMinX(int16_t val){this->minX = val;}
-
-    /**
-     * @brief Manually set the minimum Y reading.
-     */
-    void setMinY(int16_t val){this->minY = val;}
-
-    /**
-     * @brief Manually set the minimum Z reading.
-     */
-    void setMinZ(int16_t val){this->minZ = val;}
 
     private:
 
