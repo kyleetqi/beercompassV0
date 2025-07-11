@@ -2,7 +2,6 @@
 #define BIT_OPS_H
 
 #include <stdint.h>
-#include "serial_handler.h"
 
 inline uint8_t setBits(uint8_t reg, uint8_t mask){
     return reg |= mask;
