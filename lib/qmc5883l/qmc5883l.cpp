@@ -186,9 +186,17 @@ void QMC5883L::setCalibrationData(int16_t maxX, int16_t maxY, int16_t maxZ, int1
     this->minZ = minZ;
 }
 
-int16_t QMC5883L::getXRaw() {return getReading(XMSB_REG, XLSB_REG);}
-int16_t QMC5883L::getYRaw() {return getReading(YMSB_REG, YLSB_REG);}
-int16_t QMC5883L::getZRaw() {return getReading(ZMSB_REG, ZLSB_REG);}
+int16_t QMC5883L::getXRaw() {
+    return (int16_t)(i2cReadTwo(this->address, XMSB_REG, XLSB_REG));
+}
+
+int16_t QMC5883L::getYRaw() {
+    return (int16_t)(i2cReadTwo(this->address, YMSB_REG, YLSB_REG));
+}
+
+int16_t QMC5883L::getZRaw() {
+    return (int16_t)(i2cReadTwo(this->address, ZMSB_REG, ZLSB_REG));
+}
 
 float QMC5883L::getX() {return normalize(getXRaw(), this->maxX, this->minX);}
 float QMC5883L::getY() {return normalize(getYRaw(), this->maxY, this->minY);}
@@ -197,12 +205,8 @@ float QMC5883L::getZ() {return normalize(getZRaw(), this->maxZ, this->minZ);}
 float QMC5883L::azimuth(int16_t normX, int16_t normY){
     float angle = atan2(normY, normX); // Obtain angle in radians
     angle *= RAD_TO_DEG; // Convert to degrees
-    return fmod(450-angle, 360); // Change to compass angle convention
-}
-
-// TODO: Implement this function
-float QMC5883L::getTemperature(){
-    return 1.0;
+    // Convert angle to compass sign convention
+    return fmod(450-angle, 360);
 }
 
 bool QMC5883L::setMode(uint8_t bits){
@@ -237,10 +241,4 @@ float QMC5883L::normalize(int16_t val, int16_t maxVal, int16_t minVal) {
     float center = (maxVal + minVal)/2.0f;
     float halfRange = (maxVal - minVal)/2.0f;
     return (val - center)/ halfRange;
-}
-
-int16_t QMC5883L::getReading(uint8_t msbReg, uint8_t lsbReg){
-    uint8_t msb = i2cRead(this->address, msbReg);
-    uint8_t lsb = i2cRead(this->address, lsbReg);
-    return (int16_t)((msb << 8) | lsb); 
 }

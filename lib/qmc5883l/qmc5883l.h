@@ -175,13 +175,6 @@ class QMC5883L{
      */
     float azimuth(int16_t normX, int16_t normY);
 
-    // TODO: Implement this function
-    /**
-     * @brief Returns the temperature reading of the magnetometer
-     * @return the temperature of the magnetometer
-     */
-    float getTemperature();
-
     /**
      * @brief Obtain the magnetometer's maximum X axis reading.
      * @return The magnetometer's maximum X axis reading.
@@ -257,14 +250,6 @@ class QMC5883L{
      * @return The value normalized using the minimum and maximum values.
      */
     float normalize(int16_t val, int16_t maxVal, int16_t minVal);
-
-    /**
-     * @brief Obtains the magnetometer reading for a desired axis.
-     * @param msbReg The Most Significant Bit register of the axis.
-     * @param lsbReg The Least Significant Bit register of the axis.
-     * @return The reading of the axis register.
-     */
-    int16_t getReading(uint8_t msbReg, uint8_t lsbReg);
 };
 
 #endif
