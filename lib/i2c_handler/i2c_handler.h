@@ -35,4 +35,12 @@ bool i2cWrite(uint8_t addr, uint8_t reg, uint8_t data);
  */
 uint8_t i2cRead(uint8_t addr, uint8_t reg);
 
+/**
+ * @brief Reads two bytes of data from an I2C device's register.
+ * @param addr The address of the I2C device.
+ * @param msbReg The I2C device's register that contains the 8 MSBs.
+ * @param lsbReg The I2C device's register that contains the 8 LSBs.
+ */
+uint16_t i2cReadTwo(uint8_t addr, uint8_t msbReg, uint8_t lsbReg);
+
 #endif
