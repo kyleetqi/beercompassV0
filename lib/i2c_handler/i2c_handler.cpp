@@ -50,7 +50,7 @@ uint8_t i2cRead(uint8_t addr, uint8_t reg){
     return 0; // TODO: need to figure out a failed read return
 }
 
-int16_t i2cReadTwo(uint8_t addr, uint8_t msbReg, uint8_t lsbReg){
+uint16_t i2cReadTwo(uint8_t addr, uint8_t msbReg, uint8_t lsbReg){
   uint8_t msb = i2cRead(addr, msbReg);
   uint8_t lsb = i2cRead(addr, lsbReg);
   return (msb << 8) | lsb; 
