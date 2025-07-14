@@ -27,28 +27,21 @@ class QMC5883L{
     QMC5883L(uint8_t myAddress);
 
     /**
-     * @brief Suspend the magnetometer.
-     * @return true if the operation succeeded, false otherwise.
+     * @brief typedef defining the modes for the setMode function
      */
-    bool suspend();
+    enum Mode {
+        MODE_SUSPEND = 0,
+        MODE_NORMAL = 1,
+        MODE_SINGLE = 2, 
+        MODE_CONTINUOUS = 3
+    };
 
     /**
-     * @brief Set the magnetometer to normal mode.
-     * @return true if the operation succeeded, false otherwise.
+     * @brief Sets the magnetometer's operating mode.
+     * @param mode The desired mode.
+     * @return true if the configuration is successful, false otherwise.
      */
-    bool setModeNormal();
-
-    /**
-     * @brief Set the magnetometer to single mode.
-     * @return true if the operation succeeded, false otherwise.
-     */
-    bool setModeSingle();
-
-    /**
-     * @brief Set the magnetometer to continuous mode.
-     * @return true if the operation succeeded, false otherwise.
-     */
-    bool setModeContinuous();
+    bool setMode(Mode mode);
 
     /**
      * @brief Sets the magnetometer's data output frequency.
@@ -79,22 +72,20 @@ class QMC5883L{
     bool setRange(uint8_t rng = 2);
 
     /**
-     * @brief Sets the magnetometer's set/reset mode to set and reset on.
-     * @return true if the configuration is successful, false otherwise.
+     * @brief typedef defining the modes for the setResetMode function
      */
-    bool modeSetResetOn();
+    enum SetResetMode {
+        SET_RESET_ON = 0,
+        SET_ON = 1,
+        SET_RESET_OFF = 2,
+    };
 
     /**
-     * @brief Sets the magnetometer's set/reset mode to set on only.
+     * @brief Sets the magnetometer's set/reset mode.
+     * @param mode The desired mode.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool modeSetOn();
-
-    /**
-     * @brief Sets the magnetometer's set/reset mode to set and reset off.
-     * @return true if the configuration is successful, false otherwise.
-     */
-    bool modeSetResetOff();
+    bool setSetRestMode(SetResetMode mode);
 
     /**
      * @brief Resets the magnetometer's registers to its default values.
@@ -227,20 +218,6 @@ class QMC5883L{
      * @brief Minimum magnetometer reading in the indicated axis.
      */
     int16_t minX, minY, minZ;
-
-     /** 
-     * @brief Sets the magnetometer's data output mode.
-     * @param bits Bits corresponding to the desired mode.
-     * @return true if the configuration is successful, false otherwise.
-     */
-    bool setMode(uint8_t bits);
-
-    /**
-     * @brief Sets the magnetometer's set/reset mode.
-     * @param bits Bits corresponding to the desired mode.
-     * @return true if the configuration is successful, false otherwise.
-     */
-    bool setSetResetMode(uint8_t bits);
 
     /** 
      * @brief Normalize magnetometer reading to a value between -1 and 1.
