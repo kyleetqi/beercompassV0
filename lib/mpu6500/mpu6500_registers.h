@@ -16,6 +16,7 @@
 #define ZG_OFFSET_H 0x17
 #define ZG_OFFSET_L 0x18
 
+#define SMPLRT_DIV 0x19
 #define CONFIG 0x1A
 #define GYRO_CONFIG 0x1B
 #define ACCEL_CONFIG 0x1C
