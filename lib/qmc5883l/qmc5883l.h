@@ -29,7 +29,7 @@ class QMC5883L{
     /**
      * @brief typedef defining the modes for the setMode function
      */
-    enum Mode {
+    enum Mode : uint8_t {
         MODE_SUSPEND = 0,
         MODE_NORMAL = 1,
         MODE_SINGLE = 2, 
@@ -74,7 +74,7 @@ class QMC5883L{
     /**
      * @brief typedef defining the modes for the setResetMode function
      */
-    enum SetResetMode {
+    enum SetResetMode : uint8_t {
         SET_RESET_ON = 0,
         SET_ON = 1,
         SET_RESET_OFF = 2,
@@ -85,7 +85,7 @@ class QMC5883L{
      * @param mode The desired mode.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setSetRestMode(SetResetMode mode);
+    bool setSetResetMode(SetResetMode mode);
 
     /**
      * @brief Resets the magnetometer's registers to its default values.
