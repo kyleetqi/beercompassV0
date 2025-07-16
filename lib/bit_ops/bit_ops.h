@@ -1,7 +1,7 @@
 #ifndef BIT_OPS_H
 #define BIT_OPS_H
 
-#include <stdint.h>
+#include <Arduino.h>
 
 inline uint8_t setBits(uint8_t reg, uint8_t mask){
     return reg |= mask;
