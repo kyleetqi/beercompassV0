@@ -1,15 +1,10 @@
 // Include required libraries
 #include <Arduino.h>
 #include "i2c_handler.h"
-#include "serial_handler.h"
 #include "utils.h"
 #include "qmc5883l.h"
 #include "mpu6500.h"
 #include "neo_6m.h"
-
-// X min val: -16980 X max val: 12781
-// Y min val: -13560 Y max val: 13128
-// Z min val: -10305 Z max val: 6740
 
 // OLED global declarations
 #define OLED_ADDR 0x3c
@@ -48,11 +43,11 @@ void setup() {
 
   // Configure magnetometer settings
   setupSuccessful &= myCompass.resetRegisters();
-  setupSuccessful &= myCompass.setModeContinuous();
+  setupSuccessful &= myCompass.setMode(QMC5883L::MODE_CONTINUOUS);
   setupSuccessful &= myCompass.setOutputRate(100);
   setupSuccessful &= myCompass.setOverSampleRate(2);
   setupSuccessful &= myCompass.setDownSampleRate(4);
-  setupSuccessful &= myCompass.modeSetOn();
+  setupSuccessful &= myCompass.setSetResetMode(QMC5883L::SET_ON);
   setupSuccessful &= myCompass.setRange(2);
   if(!setupSuccessful){
     Serial.println("Compass configuration failed!");
