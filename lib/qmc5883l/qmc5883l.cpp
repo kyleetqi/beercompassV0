@@ -5,25 +5,25 @@
 QMC5883L::QMC5883L(uint8_t myAddress) : address(myAddress) {}
 
 bool QMC5883L::setMode(Mode mode){
-    uint8_t current = i2cRead(this->address, CTRLA_REG);
+    uint8_t config = i2cRead(this->address, CTRLA_REG);
 
     // Early return if mode is already set properly
-    if(readBits(current, 0b11) == static_cast<uint8_t>(mode)){
+    if(readBits(config, 0b11) == static_cast<uint8_t>(mode)){
         return true;
     }
 
     // Mode must be set to suspend between different modes
-    if (readBits(current, 0b11) != 0b00){
-        current = writeBits(current, 0b00, 0b11);
-        if (!i2cWrite(this->address, CTRLA_REG, current)){
+    if (readBits(config, 0b11) != 0b00){
+        config = writeBits(config, 0b00, 0b11);
+        if (!i2cWrite(this->address, CTRLA_REG, config)){
             return false;
         }
         delay(100);
     }
 
     // Write to registers
-    current = writeBits(current, static_cast<uint8_t>(mode), 0b11);
-    return i2cWrite(this->address, CTRLA_REG, current);
+    config = writeBits(config, static_cast<uint8_t>(mode), 0b11);
+    return i2cWrite(this->address, CTRLA_REG, config);
 }
     
 bool QMC5883L::setOutputRate(uint8_t odr){
@@ -39,9 +39,10 @@ bool QMC5883L::setOutputRate(uint8_t odr){
     bits <<= 2;
 
     // Set output rate
-    uint8_t current = i2cRead(this->address, CTRLA_REG);
-    current = writeBits(current, bits, 0b00001100);
-    return i2cWrite(this->address, CTRLA_REG, current);
+    return i2cWrite(this->address, CTRLA_REG, bits, 0b00001100);
+    // uint8_t config = i2cRead(this->address, CTRLA_REG);
+    // config = writeBits(config, bits, 0b00001100);
+    // return i2cWrite(this->address, CTRLA_REG, config);
 }
 
 bool QMC5883L::setOverSampleRate(uint8_t osr1){
@@ -57,9 +58,10 @@ bool QMC5883L::setOverSampleRate(uint8_t osr1){
     bits <<= 4;
 
     // Set over sample rate
-    uint8_t current = i2cRead(this->address, CTRLA_REG);
-    current = writeBits(current, bits, 0b00110000);
-    return i2cWrite(this->address, CTRLA_REG, current);
+    return i2cWrite(this->address, CTRLA_REG, bits, 0b00110000);
+    // uint8_t config = i2cRead(this->address, CTRLA_REG);
+    // config = writeBits(config, bits, 0b00110000);
+    // return i2cWrite(this->address, CTRLA_REG, config);
 }
 
 bool QMC5883L::setDownSampleRate(uint8_t osr2){
@@ -75,9 +77,10 @@ bool QMC5883L::setDownSampleRate(uint8_t osr2){
     bits <<= 6;
 
     // Set down sample rate
-    uint8_t current = i2cRead(this->address, CTRLA_REG);
-    current = writeBits(current, bits, 0b11000000);
-    return i2cWrite(this->address, CTRLA_REG, current);
+    return i2cWrite(this->address, CTRLA_REG, bits, 0b11000000);
+    // uint8_t config = i2cRead(this->address, CTRLA_REG);
+    // config = writeBits(config, bits, 0b11000000);
+    // return i2cWrite(this->address, CTRLA_REG, config);
 }
 
 bool QMC5883L::setRange(uint8_t rng){
@@ -93,21 +96,24 @@ bool QMC5883L::setRange(uint8_t rng){
     bits <<= 2;
 
     // Set range
-    uint8_t current = i2cRead(this->address, CTRLB_REG);
-    current = writeBits(current, bits, 0b00001100);
-    return i2cWrite(this->address, CTRLB_REG, current);
+    return i2cWrite(this->address, CTRLB_REG, bits, 0b00001100);
+    // uint8_t config = i2cRead(this->address, CTRLB_REG);
+    // config = writeBits(config, bits, 0b00001100);
+    // return i2cWrite(this->address, CTRLB_REG, config);
 }
 
 bool QMC5883L::setSetResetMode(SetResetMode mode){
-    uint8_t current = i2cRead(this->address, CTRLB_REG);
-    current = writeBits(current, static_cast<uint8_t>(mode), 0b11);
-    return i2cWrite(this->address, CTRLB_REG, current);
+    return i2cWrite(this->address, CTRLB_REG, static_cast<uint8_t>(mode), 0b11);
+    // uint8_t config = i2cRead(this->address, CTRLB_REG);
+    // config = writeBits(config, static_cast<uint8_t>(mode), 0b11);
+    // return i2cWrite(this->address, CTRLB_REG, config);
 }
 
 bool QMC5883L::resetRegisters(){
-    uint8_t current = i2cRead(this->address, CTRLB_REG);
-    writeBits(current, 0b10000000, 0b10000000);
-    return i2cWrite(this->address, CTRLB_REG, current);
+    return i2cWrite(this->address, CTRLB_REG, 1 << 7, 1 << 7);
+    // uint8_t config = i2cRead(this->address, CTRLB_REG);
+    // writeBits(config, 0b10000000, 0b10000000);
+    // return i2cWrite(this->address, CTRLB_REG, config);
 }
 
 bool QMC5883L::isDRDY(){
