@@ -45,7 +45,7 @@ class MPU6500{
      */
     bool setFIFOMode(uint8_t mode = 1);
 
-    // TODO: Rename this enum
+    // TODO: Create Doxygen
     enum ExtSyncSource : uint8_t {
         EXT_SOURCE_DISABLE = 0,
         EXT_SOURCE_TEMP = 1,
@@ -57,26 +57,53 @@ class MPU6500{
         EXT_SOURCE_ACCEL_Z = 7
     };
 
-    // TODO: Implement this function
-    bool setFSync(ExtSyncSource source);
+    // TODO: Create Doxygen
+    bool setFSync(ExtSyncSource source = EXT_SOURCE_DISABLE);
 
-    // TODO: Implement this function
-    bool setGyroLPFMode(uint8_t mode = 0);
+    /**
+     * @brief Sets the gyroscope and temperature sensor LPF.
+     * @param isOn true to enable the LPF, false to disable it.
+     * @param bandwidth The bandwidth of the LPF.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool setGyroLPF(bool isOn, uint8_t bandwidth = 250);
 
-    // TODO: Implement this function
+    /**
+     * @brief Set the gryo full scale range.
+     * @param range The desired range. Valid values: 250, 500, 1000, 200 (dps). Default value: 250.
+     * @return true if configuration is successful, false otherwise.
+     */
     bool setGyroRange(uint8_t range = 250);
 
-    // TODO: Implement this function
+    /**
+     * @brief Enables/disables the gyroscope and temperature sensor LPF.
+     * @note If the LPF is disabled, FCHOICE_B bits default to 01.
+     * @param inOn true to enable the LPF, false to disable it.
+     * @return true if the configuration is successful, false otherwise.
+     */
     bool gyroLPFEnable(bool isOn = 1);
 
-    // TODO: Implement this function
+    /**
+     * @brief Set the accelerometer full scale range.
+     * @param range The desired range. Valid values: 2, 4, 8, 16 (g). Default value: 2.
+     * @return true if the configuration is successful, false otherwise.
+     */
     bool setAccelRange(uint8_t range = 2);
 
-    // TODO: Implement this function
-    bool accelLPFENable(bool isOn = 1);
+    /**
+     * @brief Enables/disables the accelerometer LPF.
+     * @param isOn true to enable the LPF, false to disable it.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool accelLPFEnable(bool isOn = 1);
 
-    // TODO: Implement this function
-    bool setAccelLPFMode(uint8_t mode = 0);
+    /**
+     * @brief Sets the accelerometer LPF.
+     * @param isON true to enable the LPF, false to disable it.
+     * @param bandwidth the bandwidth of the LPF.
+     * @return true if the configuration is successful, false otherwise.
+     */
+    bool setAccelLPFMode(bool isOn, uint8_t mode = 0);
 
     /**
      * @brief Obtain the gyroscope's X reading.
