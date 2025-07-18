@@ -28,6 +28,16 @@ bool i2cInit(int sdaPin, int sclPin, uint32_t frequency);
 bool i2cWrite(uint8_t addr, uint8_t reg, uint8_t data);
 
 /**
+ * @brief Writes data to an I2C device's register at the bits specified.
+ * @param addr The address of the I2C device.
+ * @param reg The I2C device's target register.
+ * @param data The data to be written to the register.
+ * @param mask The bits in the register to be modified.
+ * @return true if writing was successful, false otherwise.
+ */
+bool i2cWrite(uint8_t addr, uint8_t reg, uint8_t data, uint8_t mask);
+
+/**
  * @brief Reads data from an I2C device's register.
  * @param addr The address of the I2C device.
  * @param reg The I2C device's target register.

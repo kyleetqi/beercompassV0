@@ -1,4 +1,5 @@
 #include "i2c_handler.h"
+#include "bit_ops.h"
 #include <Wire.h>
 
 bool i2cScan(){
@@ -31,6 +32,12 @@ bool i2cWrite(uint8_t addr, uint8_t reg, uint8_t data){
     Wire.write(reg);
     Wire.write(data);
     return Wire.endTransmission() == 0;
+}
+
+bool i2cWrite(uint8_t addr, uint8_t reg, uint8_t data, uint8_t mask){
+  uint8_t config = i2cRead(addr, reg);
+  config = writeBits(config, data, mask);
+  return i2cWrite(addr, reg, config);
 }
 
 uint8_t i2cRead(uint8_t addr, uint8_t reg){
