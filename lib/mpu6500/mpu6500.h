@@ -22,8 +22,8 @@ class MPU6500{
      */
     bool setGyroOffset(int16_t offsetX, int16_t offsetY, int16_t offsetZ);
 
-    // TODO: Make better Doxygen
-    // TODO: Add a default value for divier
+    // TODO: Make better Doxygen.
+    // TODO: Add a default value for divier.
     /**
      * @brief Sets the sample rate divider for the MPU6500.
      * @param divider value to write to the register.
@@ -60,6 +60,7 @@ class MPU6500{
     // TODO: Create Doxygen
     bool setFSync(ExtSyncSource source = EXT_SOURCE_DISABLE);
 
+    // TODO: choose sensible default parameter value.
     /**
      * @brief Sets the gyroscope and temperature sensor LPF.
      * @param isOn true to enable the LPF, false to disable it.
@@ -68,6 +69,7 @@ class MPU6500{
      */
     bool setGyroLPF(bool isOn, uint8_t bandwidth = 250);
 
+    // TODO: choose sensible default parameter value.
     /**
      * @brief Set the gryo full scale range.
      * @param range The desired range. Valid values: 250, 500, 1000, 200 (dps). Default value: 250.
@@ -83,6 +85,7 @@ class MPU6500{
      */
     bool gyroLPFEnable(bool isOn = 1);
 
+    // TODO: choose sensible default parameter value.
     /**
      * @brief Set the accelerometer full scale range.
      * @param range The desired range. Valid values: 2, 4, 8, 16 (g). Default value: 2.
@@ -97,13 +100,14 @@ class MPU6500{
      */
     bool accelLPFEnable(bool isOn = 1);
 
+    // TODO: choose sensible default parameter value.
     /**
      * @brief Sets the accelerometer LPF.
      * @param isON true to enable the LPF, false to disable it.
      * @param bandwidth the bandwidth of the LPF.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setAccelLPFMode(bool isOn, uint8_t mode = 0);
+    bool setAccelLPFMode(bool isOn, uint8_t bandwidth = 460);
 
     /**
      * @brief Obtain the gyroscope's X reading.
@@ -147,7 +151,56 @@ class MPU6500{
      */
     int16_t getTemp();
 
+    /** 
+     * @brief Resets the IC's registers.
+     * @return true if the operation is successful, false otherwise.
+     */
+    bool resetRegisters();
+
+    /**
+     * @brief Sets the chip to sleep.
+     * @return true if the operation is successful, false otherwise.
+     */
+    bool sleep();
+
+    /**
+     * @brief Wakes up the chip.
+     * @return true if the operation is successful, false otherwise.
+     */
+    bool wake();
+
+    /**
+     * @brief Sets the chip to sleep or wake.
+     * @param isAsleep true to set the chip to sleep mode, false to set to wake.
+     * @return true if the operation is successful, false otherwise.
+     */
+    bool setSleepMode(bool isAsleep);
+
+    // TODO: Implement function for CYCLE bit
+    // PWR_MGMT_1 Register
+
+    /**
+     * @brief Enables/disables the temperature sensor.
+     * @param isEnable true to enable the sensor, false othwerise.
+     * @return true if the operation is successful, false otherwise.
+     */
+    bool enableTempSense(bool isEnable);
+
+
+    // TODO: IMplement function for LP_WAKE_CTRL bits
+    // PWR_MGMT_2 Register
+
+    bool enableXAccel(bool isEnable);
+    bool enableYAccel(bool isEnable);
+    bool enableZAccel(bool isEnable);
+    bool enableXGyro(bool isEnable);
+    bool enableYGyro(bool isEnable);
+    bool enableZGyro(bool isEnable);
     private:
+
+    /**
+     * @brief The I2C address of the device.
+     */
     uint8_t address;
 };
 

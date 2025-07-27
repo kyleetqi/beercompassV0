@@ -33,16 +33,18 @@ bool MPU6500::setFIFOMode(uint8_t mode){
     mode <<= 6;
 
     // Set FIFO Mode
-    uint8_t config = i2cRead(this->address, CONFIG);
-    config = writeBits(config, mode, 0b01000000);
-    return i2cWrite(this->address, CONFIG, config);
+    return i2cWrite(this->address, CONFIG, mode, 0b01000000);
+    // uint8_t config = i2cRead(this->address, CONFIG);
+    // config = writeBits(config, mode, 0b01000000);
+    // return i2cWrite(this->address, CONFIG, config);
 }
 
 bool MPU6500::setFSync(ExtSyncSource source){
     source <= 3;
-    uint8_t config = i2cRead(this->address, CONFIG);
-    config = writeBits(config, static_cast<uint8_t>(source), 0b00111000);
-    return i2cWrite(this->address, CONFIG, config);
+    return i2cWrite(this->address, CONFIG, static_cast<uint8_t>(source), 0b00111000);
+    // uint8_t config = i2cRead(this->address, CONFIG);
+    // config = writeBits(config, static_cast<uint8_t>(source), 0b00111000);
+    // return i2cWrite(this->address, CONFIG, config);
 }
 
 
@@ -68,9 +70,10 @@ bool MPU6500::setGyroLPF(bool isOn, uint8_t bandwidth){
         }
 
         // Write bits to register
-        uint8_t config = i2cRead(this->address, CONFIG);
-        config = writeBits(config, bits, 0b00000111);
-        return i2cWrite(this->address, CONFIG, config);
+        return i2cWrite(this->address, CONFIG, bits, 0b00000111);
+        // uint8_t config = i2cRead(this->address, CONFIG);
+        // config = writeBits(config, bits, 0b00000111);
+        // return i2cWrite(this->address, CONFIG, config);
     }
     return true;
 }
@@ -88,9 +91,10 @@ bool MPU6500::setGyroRange(uint8_t range){
     bits <<= 3;
 
     // Set gyro range
-    uint8_t config = i2cRead(this->address, GYRO_CONFIG);
-    config = writeBits(config, bits, 0b00011000);
-    return i2cWrite(this->address, GYRO_CONFIG, config);
+    return i2cWrite(this->address, GYRO_CONFIG, bits, 0b00011000);
+    // uint8_t config = i2cRead(this->address, GYRO_CONFIG);
+    // config = writeBits(config, bits, 0b00011000);
+    // return i2cWrite(this->address, GYRO_CONFIG, config);
 }
 
 bool MPU6500::gyroLPFEnable(bool isOn){
@@ -101,9 +105,10 @@ bool MPU6500::gyroLPFEnable(bool isOn){
     }
 
     // Write bits to register
-    uint8_t config = i2cRead(this->address, GYRO_CONFIG);
-    config = writeBits(config, bits, 0b00000011);
-    return i2cWrite(this->address, GYRO_CONFIG, config);
+    return i2cWrite(this->address, GYRO_CONFIG, bits, 0b00000011);
+    // uint8_t config = i2cRead(this->address, GYRO_CONFIG);
+    // config = writeBits(config, bits, 0b00000011);
+    // return i2cWrite(this->address, GYRO_CONFIG, config);
 }
 
 bool MPU6500::setAccelRange(uint8_t range){
@@ -119,9 +124,10 @@ bool MPU6500::setAccelRange(uint8_t range){
     bits <<= 3;
 
     // Write bits to register
-    uint8_t config = i2cRead(this->address, GYRO_CONFIG);
-    config = writeBits(config, bits, 0b00011000);
-    return i2cWrite(this->address, ACCEL_CONFIG, config);
+    return i2cWrite(this->address, ACCEL_CONFIG, bits, 0b00011000);
+    // uint8_t config = i2cRead(this->address, GYRO_CONFIG);
+    // config = writeBits(config, bits, 0b00011000);
+    // return i2cWrite(this->address, ACCEL_CONFIG, config);
 }
 
 bool MPU6500::accelLPFEnable(bool isOn){
@@ -133,13 +139,36 @@ bool MPU6500::accelLPFEnable(bool isOn){
     bits <<= 3;
 
     // Write bits to register
-    uint8_t config = i2cRead(this->address, ACCEL_CONFIG_2);
-    config = writeBits(config, bits, 0b00001000);
-    return i2cWrite(this->address, ACCEL_CONFIG_2, config);
+    return i2cWrite(this->address, ACCEL_CONFIG_2, bits, 0b00001000);
+    // uint8_t config = i2cRead(this->address, ACCEL_CONFIG_2);
+    // config = writeBits(config, bits, 0b00001000);
+    // return i2cWrite(this->address, ACCEL_CONFIG_2, config);
 }
 
-bool MPU6500::setAccelLPFMode(bool isOn, uint8_t mode){
+bool MPU6500::setAccelLPFMode(bool isOn, uint8_t bandwidth){
+    // Enable/Disable the LPF
+    if(!(this->accelLPFEnable(isOn))){
+        return false;
+    }
+    // Configure LPF if on
+    if (isOn) {
+        // Set bits based on mode selected
+        uint8_t bits;
+        switch(bandwidth){
+            case 460: bits = 0; break;
+            case 184: bits = 1; break;
+            case 92: bits = 2; break;
+            case 41: bits = 3; break;
+            case 20: bits = 4; break;
+            case 10: bits = 5; break;
+            case 5: bits = 6; break;
+            default: return false;
+        }
 
+        // Write bits to register
+        return i2cWrite(this->address, ACCEL_CONFIG_2, bits, 0b00000111);
+    }
+    return true;
 }
 
 int16_t MPU6500::getGyroX(){
@@ -172,4 +201,24 @@ int16_t MPU6500::getTemp(){
     // TODO: Define tempOffset and tempSensitivity
     // return (reading - tempOffset)/tempSensitivity + 21;
     return reading;
+}
+
+bool MPU6500::resetRegisters(){
+    return i2cWrite(this->address, PWR_MGMT_1, 1, 0b10000000);
+}
+
+bool MPU6500::sleep(){
+    return setSleepMode(1);
+}
+
+bool MPU6500::wake(){
+    return setSleepMode(0);
+}
+
+bool MPU6500::setSleepMode(bool isAsleep){
+    return i2cWrite(this->address, PWR_MGMT_1, uint8_t(isAsleep), 0b01000000);
+}
+
+bool MPU6500::enableTempSense(bool isEnable){
+    return i2cWrite(this->address, PWR_MGMT_1, (uint8_t)(!isEnable), 0b00001000);
 }
