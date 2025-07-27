@@ -42,5 +42,5 @@
 #define PWR_MGMT_1 0x6B
 #define PWR_MGMT_2 0x6C
 
-
+#define WHO_AM_I 0x75
 #endif

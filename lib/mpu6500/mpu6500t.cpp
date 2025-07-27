@@ -216,9 +216,58 @@ bool MPU6500::wake(){
 }
 
 bool MPU6500::setSleepMode(bool isAsleep){
-    return i2cWrite(this->address, PWR_MGMT_1, uint8_t(isAsleep), 0b01000000);
+    return setRegBit(PWR_MGMT_1, isAsleep, 6);
+    // return i2cWrite(this->address, PWR_MGMT_1, uint8_t(isAsleep), 0b01000000);
 }
 
 bool MPU6500::enableTempSense(bool isEnable){
-    return i2cWrite(this->address, PWR_MGMT_1, (uint8_t)(!isEnable), 0b00001000);
+    return setRegBit(PWR_MGMT_1, !isEnable, 3);
+    // return i2cWrite(this->address, PWR_MGMT_1, (uint8_t)(!isEnable), 0b00001000);
+}
+
+bool MPU6500::enableXAccel(bool isEnable){
+    return setRegBit(PWR_MGMT_2, !isEnable, 5);
+}
+
+bool MPU6500::enableYAccel(bool isEnable){
+    return setRegBit(PWR_MGMT_2, !isEnable, 4);
+}
+
+bool MPU6500::enableZAccel(bool isEnable){
+    return setRegBit(PWR_MGMT_2, !isEnable, 3);
+}
+
+bool MPU6500::enableXGyro(bool isEnable){
+    return setRegBit(PWR_MGMT_2, !isEnable, 2);
+}
+
+bool MPU6500::enableYGyro(bool isEnable){
+    return setRegBit(PWR_MGMT_2, !isEnable, 1);
+}
+
+bool MPU6500::enableZGyro(bool isEnable){
+    return setRegBit(PWR_MGMT_2, !isEnable, 0);
+}
+
+bool MPU6500::enableAccel(bool isEnable){
+    bool success = enableXAccel(isEnable);
+    success &= enableYAccel(isEnable);
+    success &= enableZAccel(isEnable);
+    return success;
+}
+
+bool MPU6500::enableGyro(bool isEnable){
+    bool success = enableXGyro(isEnable);
+    success &= enableYGyro(isEnable);
+    success &= enableZGyro(isEnable);
+    return success;
+}
+
+uint8_t MPU6500::whoAmI(){
+    return i2cRead(this->address, WHO_AM_I);
+}
+
+
+bool MPU6500::setRegBit(uint8_t reg, bool myBit, uint8_t bitPos){
+    return i2cWrite(this->address, reg, (uint8_t)myBit, 1 << bitPos);
 }

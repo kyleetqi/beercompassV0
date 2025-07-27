@@ -187,21 +187,40 @@ class MPU6500{
     bool enableTempSense(bool isEnable);
 
 
-    // TODO: IMplement function for LP_WAKE_CTRL bits
+    // TODO: Implement function for LP_WAKE_CTRL bits
     // PWR_MGMT_2 Register
 
+    // TODO: Create Doxygen
     bool enableXAccel(bool isEnable);
     bool enableYAccel(bool isEnable);
     bool enableZAccel(bool isEnable);
     bool enableXGyro(bool isEnable);
     bool enableYGyro(bool isEnable);
     bool enableZGyro(bool isEnable);
+
+    bool enableAccel(bool isEnable);
+    bool enableGyro(bool isEnable);
+
+    uint8_t whoAmI();
+
+    // TODO: Add XA_OFFS and sim functions or something
+
     private:
 
     /**
      * @brief The I2C address of the device.
      */
     uint8_t address;
+
+    // TODO: Create Doxygen
+    /**
+     * @brief TBD
+     * @param reg
+     * @param myBit
+     * @param bitPos
+     * @return
+     */
+    bool setRegBit(uint8_t reg, bool myBit, uint8_t bitPos);
 };
 
 #endif
