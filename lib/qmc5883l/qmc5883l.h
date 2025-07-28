@@ -113,94 +113,130 @@ class QMC5883L{
 
     /**
      * @brief Manually set magnetometer's maximum/minimum readings for calibration.
-     * @param maxX The maximum reading in the X direction.
-     * @param maxY The maximum reading in the Y direction.
-     * @param maxZ The maximum reading in the Z direction.
-     * @param minX The minimum reading in the X direction.
-     * @param minY The minimum reading in the Y direction.
-     * @param minZ The minimum reading in the Z direction.
+     * @param xMax The maximum reading in the X direction.
+     * @param yMax The maximum reading in the Y direction.
+     * @param zMax The maximum reading in the Z direction.
+     * @param xMin The minimum reading in the X direction.
+     * @param yMin The minimum reading in the Y direction.
+     * @param zMin The minimum reading in the Z direction.
      */
-    void setCalibrationData(int16_t maxX, int16_t maxY, int16_t maxZ, int16_t minX, int16_t minY, int16_t minZ);
+    void setCalibrationData(int16_t xMax, int16_t yMax, int16_t zMax, int16_t xMin, int16_t yMin, int16_t zMin);
 
     /** 
      * @brief Reads the magnetometer's raw reading in the X axis.
      * @return The magnetometer's raw X axis reading.
      */
-    int16_t getXRaw();
+    int16_t readXRaw();
 
     /** 
      * @brief Reads the magnetometer's raw Y axis reading.
      * @return The magnetometer's raw Y axis reading.
      */
-    int16_t getYRaw();
+    int16_t readYRaw();
 
     /**
     * @brief Reads the magnetometer's raw Z axis reading.
     * @return The magnetometer's raw Y axis reading.
     */
-    int16_t getZRaw();
+    int16_t readZRaw();
 
     /**
-     * @brief Calculates the magnetometer's X axis reading normalized using its max/min values.
+     * @brief Obtains the most recent magnetometer raw x reading.
+     * @return The most recent raw x reading.
+     */
+    int16_t getXRaw(){return this->xRaw;}
+
+    /**
+     * @brief Obtains the most recent magnetometer raw y reading.
+     * @return The most recent raw y reading.
+     */
+    int16_t getYRaw(){return this->yRaw;}
+
+    /**
+     * @brief Obtains the most recent magnetometer raw z reading.
+     * @return The most recent raw z reading.
+     */
+    int16_t getZRaw(){return this->zRaw;}
+
+    /**
+     * @brief Reads and calculates the magnetometer's X axis reading normalized using its max/min values.
      * @return The magnetometer's normalized X axis reading.
      */
-    float getX();
+    float readX();
 
     /**
-     * @brief Calculates the magnetometer's Y axis reading normalized using its max/min values.
+     * @brief Reads and calculates the magnetometer's Y axis reading normalized using its max/min values.
      * @return The magnetometer's normalized Y axis reading.
      */
-    float getY();
+    float readY();
 
     /**
-     * @brief Calculates the magnetometer's Y axis reading normalized using its max/min values.
-     * @return The magnetometer's normalized Y axis reading.
+     * @brief Reads and calculates the magnetometer's Z axis reading normalized using its max/min values.
+     * @return The magnetometer's normalized Z axis reading.
      */
-    float getZ();
+    float readZ();
+
+    /**
+     * @brief Obtains the most recent magnetometer normalized x reading.
+     * @return The most recent normalized x reading.
+     */
+    float getX(){return this->x;}
+
+    /**
+     * @brief Obtains the most recent magnetometer normalized y reading.
+     * @return The most recent normalized y reading.
+     */
+    float getY(){return this->y;}
+
+    /**
+     * @brief Obtains the most recent magnetometer normalized z reading.
+     * @return The most recent normalized z reading.
+     */
+    float getZ(){return this->z;}
 
     /**
      * @brief Calculates the azimuth/heading of the compass.
-     * @param normX The normalized X reading of the magnetometer [-1,1].
-     * @param normY The normalized Y reading of the magnetometer [-1,1].
+     * @param xNorm The normalized X reading of the magnetometer [-1,1].
+     * @param yNorm The normalized Y reading of the magnetometer [-1,1].
      * @return The magnetometer azimuth/heading in degrees.
      */
-    float azimuth(int16_t normX, int16_t normY);
+    float azimuth(float xNorm, float yNorm);
 
     /**
      * @brief Obtain the magnetometer's maximum X axis reading.
      * @return The magnetometer's maximum X axis reading.
      */
-    int16_t getMaxX(){return this->maxX;}
+    int16_t getXMax(){return this->xMax;}
 
     /**
      * @brief Obtain the magnetometer's maximum Y axis reading.
      * @return The magnetometer's maximum Y axis reading.
      */ 
-    int16_t getMaxY(){return this->maxY;}
+    int16_t getYMax(){return this->yMax;}
 
     /**
      * @brief Obtain the magnetometer's maximum Z axis reading.
      * @return The magnetometer's maximum Z axis reading.
      */    
-    int16_t getMaxZ(){return this->maxZ;}
+    int16_t getZMax(){return this->zMax;}
 
     /**
      * @brief Obtain the magnetometer's minimum X axis reading.
      * @return The magnetometer's minimum X axis reading.
      */
-    int16_t getMinX(){return this->minX;}
+    int16_t getXMin(){return this->xMin;}
 
     /**
      * @brief Obtain the magnetometer's minimum Y axis reading.
      * @return The magnetometer's minimum Y axis reading.
      */
-    int16_t getMinY(){return this->minY;}
+    int16_t getYMin(){return this->yMin;}
 
     /**
      * @brief Obtain the magnetometer's minimum Z axis reading.
      * @return The magnetometer's minimum Z axis reading.
      */
-    int16_t getMinZ(){return this->minZ;}
+    int16_t getZMin(){return this->zMin;}
 
     private:
 
@@ -212,14 +248,30 @@ class QMC5883L{
     /**
      * @brief Maximum magnetometer reading in the indicated axis.
      */
-    int16_t maxX, maxY, maxZ;
+    int16_t xMax, yMax, zMax;
 
      /**
      * @brief Minimum magnetometer reading in the indicated axis.
      */
-    int16_t minX, minY, minZ;
+    int16_t xMin, yMin, zMin;
 
-    /** 
+    /**
+     * @brief The most recent magnetometer, x, y and z readings.
+     */
+    int16_t xRaw, yRaw, zRaw;
+
+    /**
+     * @brief The most recent magnetometer x, y, and z readings, normalized to [-1, 1]
+     */
+    float x, y, z;
+
+    // TODO: Create doxygen
+    /**
+     * 
+     */
+    int16_t readAxisRaw(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, int16_t max, int16_t min);
+
+    /**
      * @brief Normalize magnetometer reading to a value between -1 and 1.
      * @param val The magnetometer reading to be normalized.
      * @param maxVal The maximum reading in the desired axis.
