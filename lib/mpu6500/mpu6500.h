@@ -112,46 +112,71 @@ class MPU6500{
     bool setAccelLPFMode(bool isOn, uint8_t bandwidth = 460);
 
     /**
-     * @brief Obtain the gyroscope's X reading.
+     * @brief Read the gyroscope's X reading.
      * @return The gyroscope's X reading.
      */
-    int16_t getGyroX();
+    int16_t readGyroX();
 
     /**
-     * @brief Obtain the gyroscope's Y reading.
+     * @brief Read the gyroscope's Y reading.
      * @return The gyroscope's Y reading.
      */
-    int16_t getGyroY();
+    int16_t readGyroY();
 
     /**
-     * @brief Obtain the gyroscope's Z reading.
+     * @brief Read the gyroscope's Z reading.
      * @return The gyroscope's Z reading.
      */
-    int16_t getGyroZ();
+    int16_t readGyroZ();
+
+    // TODO: Create doxygen.
+    /**
+     * @brief 
+     * @return
+     */
+    int16_t getGyroX(){return this->xGyro;}
+    int16_t getGyroY(){return this->yGyro;}
+    int16_t getGyroZ(){return this->zGyro;}
 
     /**
-     * @brief Obtain the accelerometer's X reading.
+     * @brief Read the accelerometer's X reading.
      * @return The acceleromter's X reading.
      */
-    int16_t getAccelX();
+    int16_t readAccelX();
 
     /**
-     * @brief Obtain the accelerometer's Y reading.
+     * @brief Read the accelerometer's Y reading.
      * @return The acceleromter's Y reading.
      */
-    int16_t getAccelY();
+    int16_t readAccelY();
 
     /**
-     * @brief Obtain the accelerometer's Z reading.
+     * @brief Read the accelerometer's Z reading.
      * @return The acceleromter's Z reading.
      */
-    int16_t getAccelZ();
+    int16_t readAccelZ();
+
+    // TODO: Create doxygen.
+    /**
+     * @brief 
+     * @return
+     */
+    int16_t getAccelX(){return this->xAccel;}
+    int16_t getAccelY(){return this->yAccel;}
+    int16_t getAccelZ(){return this->zAccel;}
 
     /**
-     * @brief Obtain the device's temperature reading.
+     * @brief Read the device's temperature reading.
      * @return The device's temperature reading in Celsius.
      */
-    int16_t getTemp();
+    int16_t readTemp();
+
+    // TODO: Create doxygen.
+    /**
+     * @brief 
+     * @return
+     */
+    int16_t getTemp(){return this->temp;}
 
     /** 
      * @brief Resets the IC's registers.
@@ -263,6 +288,21 @@ class MPU6500{
      * @brief The I2C address of the device.
      */
     uint8_t address;
+
+    /**
+     * @brief The most recent gyroscope reading in the specified axis.
+     */
+     int16_t xGyro, yGyro, zGyro;
+
+    /**
+     * @brief The most recent accelerometer reading in the specified axis.
+     */
+     int16_t xAccel, yAccel, zAccel;
+
+    /**
+     * @brief The most recent temperature reading in celsius.
+     */
+     int16_t temp;
 
     /**
      * @brief Sets a single bit in a desired chip register. Used for set/reset purposes.
