@@ -43,9 +43,11 @@ class MPU6500{
      * @param mode The desired FIFO mode.
      * @return true if the operation is successful, false otherwise.
      */
-    bool setFIFOMode(uint8_t mode = 1);
+    bool setFIFOMode(bool stopWhenFull = 1);
 
-    // TODO: Create Doxygen
+    /**
+     * @brief typedef defining the external sync sources for setFSync
+     */
     enum ExtSyncSource : uint8_t {
         EXT_SOURCE_DISABLE = 0,
         EXT_SOURCE_TEMP = 1,
@@ -190,17 +192,67 @@ class MPU6500{
     // TODO: Implement function for LP_WAKE_CTRL bits
     // PWR_MGMT_2 Register
 
-    // TODO: Create Doxygen
+    /**
+     * @brief Enables/disables the X accelerometer.
+     * @param isEnable true to enable the accelerometer, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableXAccel(bool isEnable);
+
+    /**
+     * @brief Enables/disables the Y accelerometer.
+     * @param isEnable true to enable the accelerometer, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableYAccel(bool isEnable);
+
+    /**
+     * @brief Enables/disables the Z accelerometer.
+     * @param isEnable true to enable the accelerometer, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableZAccel(bool isEnable);
+
+    /**
+     * @brief Enables/disables the X gyroscope.
+     * @param isEnable true to enable the gyroscope, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableXGyro(bool isEnable);
+
+    /**
+     * @brief Enables/disables the Y gyroscope.
+     * @param isEnable true to enable the gyroscope, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableYGyro(bool isEnable);
+
+    /**
+     * @brief Enables/disables the Z gyroscope.
+     * @param isEnable true to enable the gyroscope, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableZGyro(bool isEnable);
 
+    /**
+     * @brief Enables/disables the accelerometers.
+     * @param isEnable true to enable the accelerometers, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableAccel(bool isEnable);
+
+    /**
+     * @brief Enables/disables the gyroscopes.
+     * @param isEnable true to enable the gyroscope, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
     bool enableGyro(bool isEnable);
 
+    // TODO: Create doxygen.
+    /**
+     * @brief
+     * @return
+     */
     uint8_t whoAmI();
 
     // TODO: Add XA_OFFS and sim functions or something
@@ -212,13 +264,12 @@ class MPU6500{
      */
     uint8_t address;
 
-    // TODO: Create Doxygen
     /**
-     * @brief TBD
-     * @param reg
-     * @param myBit
-     * @param bitPos
-     * @return
+     * @brief Sets a single bit in a desired chip register. Used for set/reset purposes.
+     * @param reg The desired register to be modifed.
+     * @param myBit The bit to write to the register.
+     * @param bitPos The target bit position in the desired register.
+     * @return true if the operation is successful, false otherwise.
      */
     bool setRegBit(uint8_t reg, bool myBit, uint8_t bitPos);
 };
