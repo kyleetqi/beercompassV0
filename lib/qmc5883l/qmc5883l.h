@@ -267,9 +267,15 @@ class QMC5883L{
 
     // TODO: Create doxygen
     /**
-     * 
+     * @brief Reads raw magnetometer data from a specified axis and updates internal state.
+     * @param msbReg The register address containing the MSB axis information.
+     * @param lsbReg The register address containing the LSB axis information.
+     * @param rawStorage The variable where the raw reading should be stored.
+     * @param normStorage the variable where the normalized reading should be stored.
+     * @param maxVal The maximum value for this axis.
+     * @param minVal The minimum value for this axis.
      */
-    int16_t readAxisRaw(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, int16_t max, int16_t min);
+    int16_t readAxisRaw(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, int16_t maxVal, int16_t minVal);
 
     /**
      * @brief Normalize magnetometer reading to a value between -1 and 1.
