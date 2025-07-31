@@ -256,16 +256,15 @@ class QMC5883L{
     int16_t xMin, yMin, zMin;
 
     /**
-     * @brief The most recent magnetometer, x, y and z readings.
+     * @brief The most recent magnetometer reading in the indicated axis.
      */
     int16_t xRaw, yRaw, zRaw;
 
     /**
-     * @brief The most recent magnetometer x, y, and z readings, normalized to [-1, 1]
+     * @brief The most recent magnetomer reading in the indicated axis, normalized to [-1, 1].
      */
     float x, y, z;
 
-    // TODO: Create doxygen
     /**
      * @brief Reads raw magnetometer data from a specified axis and updates internal state.
      * @param msbReg The register address containing the MSB axis information.

@@ -84,11 +84,11 @@ void loop() {
     // Serial.println(myCompass.getZ());
 
     Serial.print("X raw: ");
-    Serial.print(myCompass.getXRaw());
+    Serial.print(myCompass.readXRaw());
     Serial.print(" Y raw: ");
-    Serial.print(myCompass.getYRaw());
+    Serial.print(myCompass.readYRaw());
     Serial.print(" Z raw: ");
-    Serial.println(myCompass.getZRaw());
+    Serial.println(myCompass.readZRaw());
 
     // Serial.println("End reading");
   } else {

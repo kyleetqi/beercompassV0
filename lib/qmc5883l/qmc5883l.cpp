@@ -167,25 +167,6 @@ void QMC5883L::calibrate(int calibrationTime){
     this->yMin = minMaxReadings[1][0];
     this->zMin = minMaxReadings[2][0];
 
-    // Write values to serial
-    // Serial.print("X min val: ");
-    // Serial.print(this->xMin);
-    // Serial.print(" ");
-    // Serial.print("X max val: ");
-    // Serial.println(this->xMax);
-
-    // Serial.print("Y min val: ");
-    // Serial.print(this->yMin);
-    // Serial.print(" ");
-    // Serial.print("Y max val: ");
-    // Serial.println(this->yMax);
-
-    // Serial.print("Z min val: ");
-    // Serial.print(this->zMin);
-    // Serial.print(" ");
-    // Serial.print("Z max val: ");
-    // Serial.println(this->zMax);
-
     Serial.println("If you want to hardcode debug values, add this to main:");
     Serial.print("<yourCompassName>.setCalibrationData(");
     Serial.print(this->xMax);
@@ -245,10 +226,10 @@ float QMC5883L::azimuth(float xNorm, float yNorm){
     return fmod(450-angle, 360);
 }
 
-int16_t QMC5883L::readAxisRaw(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, int16_t max, int16_t min){
+int16_t QMC5883L::readAxisRaw(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, int16_t maxVal, int16_t minVal){
     int16_t val = (int16_t)(i2cReadTwo(this->address, msbReg, lsbReg));
     rawStorage = val;
-    normStorage = normalize(val, max, min);
+    normStorage = normalize(val, maxVal, minVal);
     return val;
 }
 

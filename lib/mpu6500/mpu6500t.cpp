@@ -144,31 +144,33 @@ bool MPU6500::setAccelLPFMode(bool isOn, uint8_t bandwidth){
     return true;
 }
 
-int16_t MPU6500::getGyroX(){
+// TODO: Update read functions to update the object's values.
+
+int16_t MPU6500::readGyroX(){
     return (int16_t)(i2cReadTwo(this->address, GYRO_XOUT_H, GYRO_XOUT_L));
 }
 
-int16_t MPU6500::getGyroY(){
+int16_t MPU6500::readGyroY(){
     return (int16_t)(i2cReadTwo(this->address, GYRO_YOUT_H, GYRO_YOUT_L));
 }
 
-int16_t MPU6500::getGyroZ(){
+int16_t MPU6500::readGyroZ(){
     return (int16_t)(i2cReadTwo(this->address, GYRO_ZOUT_H, GYRO_ZOUT_L));
 }
 
-int16_t MPU6500::getAccelX(){
+int16_t MPU6500::readAccelX(){
     return (int16_t)(i2cReadTwo(this->address, ACCEL_XOUT_H, ACCEL_XOUT_L));
 }
 
-int16_t MPU6500::getAccelY(){
+int16_t MPU6500::readAccelY(){
     return (int16_t)(i2cReadTwo(this->address, ACCEL_YOUT_H, ACCEL_YOUT_L));
 }
 
-int16_t MPU6500::getAccelZ(){
+int16_t MPU6500::readAccelZ(){
     return (int16_t)(i2cReadTwo(this->address, ACCEL_ZOUT_H, ACCEL_ZOUT_L));
 }
 
-int16_t MPU6500::getTemp(){
+int16_t MPU6500::readTemp(){
     int16_t reading = (int16_t)(i2cReadTwo(this->address, TEMP_OUT_H, TEMP_OUT_L));
     // Convert the reading into degrees Celsius. Reference the data sheet for equation
     // TODO: Define tempOffset and tempSensitivity

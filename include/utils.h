@@ -3,9 +3,7 @@
 
 /**
  * @brief Returns compass heading, compansating for tilt
- * 
  * @param azimuth The current compass azimuth
- * 
  * @return
  */
 float trueHeading();
