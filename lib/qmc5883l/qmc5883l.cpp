@@ -40,9 +40,6 @@ bool QMC5883L::setOutputRate(uint8_t odr){
 
     // Set output rate
     return i2cWrite(this->address, CTRLA_REG, bits, 0b00001100);
-    // uint8_t config = i2cRead(this->address, CTRLA_REG);
-    // config = writeBits(config, bits, 0b00001100);
-    // return i2cWrite(this->address, CTRLA_REG, config);
 }
 
 bool QMC5883L::setOverSampleRate(uint8_t osr1){
@@ -59,9 +56,6 @@ bool QMC5883L::setOverSampleRate(uint8_t osr1){
 
     // Set over sample rate
     return i2cWrite(this->address, CTRLA_REG, bits, 0b00110000);
-    // uint8_t config = i2cRead(this->address, CTRLA_REG);
-    // config = writeBits(config, bits, 0b00110000);
-    // return i2cWrite(this->address, CTRLA_REG, config);
 }
 
 bool QMC5883L::setDownSampleRate(uint8_t osr2){
@@ -78,9 +72,6 @@ bool QMC5883L::setDownSampleRate(uint8_t osr2){
 
     // Set down sample rate
     return i2cWrite(this->address, CTRLA_REG, bits, 0b11000000);
-    // uint8_t config = i2cRead(this->address, CTRLA_REG);
-    // config = writeBits(config, bits, 0b11000000);
-    // return i2cWrite(this->address, CTRLA_REG, config);
 }
 
 bool QMC5883L::setRange(uint8_t rng){
@@ -94,26 +85,19 @@ bool QMC5883L::setRange(uint8_t rng){
         default: return false;
     }
     bits <<= 2;
+    this->range = rng;
+    this->lsbRes = float(range)/32768.0f;
 
     // Set range
     return i2cWrite(this->address, CTRLB_REG, bits, 0b00001100);
-    // uint8_t config = i2cRead(this->address, CTRLB_REG);
-    // config = writeBits(config, bits, 0b00001100);
-    // return i2cWrite(this->address, CTRLB_REG, config);
 }
 
 bool QMC5883L::setSetResetMode(SetResetMode mode){
     return i2cWrite(this->address, CTRLB_REG, static_cast<uint8_t>(mode), 0b11);
-    // uint8_t config = i2cRead(this->address, CTRLB_REG);
-    // config = writeBits(config, static_cast<uint8_t>(mode), 0b11);
-    // return i2cWrite(this->address, CTRLB_REG, config);
 }
 
 bool QMC5883L::resetRegisters(){
     return i2cWrite(this->address, CTRLB_REG, 1 << 7, 1 << 7);
-    // uint8_t config = i2cRead(this->address, CTRLB_REG);
-    // writeBits(config, 0b10000000, 0b10000000);
-    // return i2cWrite(this->address, CTRLB_REG, config);
 }
 
 bool QMC5883L::isDRDY(){
@@ -140,7 +124,7 @@ void QMC5883L::calibrate(int calibrationTime){
     bool isCalibrated = false;
     while (!isCalibrated) {
         Serial.println("Keep moving compass...");
-        int16_t readings[3] = {getXRaw(), getYRaw(), getZRaw()};
+        int16_t readings[3] = {readX(), readY(), readZ()};
 
         for (int i = 0; i < 3; i++) {
             if (readings[i] < minMaxReadings[i][0]) {
@@ -192,44 +176,29 @@ void QMC5883L::setCalibrationData(int16_t xMax, int16_t yMax, int16_t zMax, int1
     this->zMin = zMin;
 }
 
-int16_t QMC5883L::readXRaw() {
-    return readAxisRaw(XMSB_REG, XLSB_REG, this->xRaw, this->x, this->xMax, this->xMin);
+int16_t QMC5883L::readX() {
+    return readAxis(XMSB_REG, XLSB_REG, this->xRaw, this->x, this->xGauss, this->xMax, this->xMin);
 }
 
-int16_t QMC5883L::readYRaw() {
-    return readAxisRaw(YMSB_REG, YLSB_REG, this->yRaw, this->y, this->yMax, this->yMin);
+int16_t QMC5883L::readY() {
+    return readAxis(YMSB_REG, YLSB_REG, this->yRaw, this->y, this->yGauss, this->yMax, this->yMin);
 }
 
-int16_t QMC5883L::readZRaw() {
-    return readAxisRaw(ZMSB_REG, ZLSB_REG, this->zRaw, this->z, this->zMax, this->zMin);
-}
-
-float QMC5883L::readX() {
-    readXRaw();
-    return this->x;
-}
-
-float QMC5883L::readY() {
-    readYRaw();
-    return this->y;
-}
-
-float QMC5883L::readZ() {
-    readZRaw();
-    return this->z;
+int16_t QMC5883L::readZ() {
+    return readAxis(ZMSB_REG, ZLSB_REG, this->zRaw, this->z, this->zGauss, this->zMax, this->zMin);
 }
 
 float QMC5883L::azimuth(float xNorm, float yNorm){
-    float angle = atan2(yNorm, xNorm); // Obtain angle in radians
-    angle *= RAD_TO_DEG; // Convert to degrees
+    float angle = atan2(yNorm, xNorm) * RAD_TO_DEG; // Obtain angle in radians
     // Convert angle to compass sign convention
     return fmod(450-angle, 360);
 }
 
-int16_t QMC5883L::readAxisRaw(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, int16_t maxVal, int16_t minVal){
+int16_t QMC5883L::readAxis(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, float& gaussStorage, int16_t maxVal, int16_t minVal){
     int16_t val = (int16_t)(i2cReadTwo(this->address, msbReg, lsbReg));
     rawStorage = val;
     normStorage = normalize(val, maxVal, minVal);
+    gaussStorage = (float)val*lsbRes;
     return val;
 }
 

@@ -107,7 +107,7 @@ class QMC5883L{
 
     /** 
      * @brief Determines and stores the maximum and minimum readings in the X, Y, and Z directions.
-     * @param calibrationTime TBD.
+     * @param calibrationTime Duration of no-change before ending calibration in ms.
      */
     void calibrate(int calibrationTime);
 
@@ -126,19 +126,19 @@ class QMC5883L{
      * @brief Reads the magnetometer's raw reading in the X axis.
      * @return The magnetometer's raw X axis reading.
      */
-    int16_t readXRaw();
+    int16_t readX();
 
     /** 
      * @brief Reads the magnetometer's raw Y axis reading.
      * @return The magnetometer's raw Y axis reading.
      */
-    int16_t readYRaw();
+    int16_t readY();
 
     /**
     * @brief Reads the magnetometer's raw Z axis reading.
-    * @return The magnetometer's raw Y axis reading.
+    * @return The magnetometer's raw Z axis reading.
     */
-    int16_t readZRaw();
+    int16_t readZ();
 
     /**
      * @brief Obtains the most recent magnetometer raw x reading.
@@ -159,24 +159,6 @@ class QMC5883L{
     int16_t getZRaw(){return this->zRaw;}
 
     /**
-     * @brief Reads and calculates the magnetometer's X axis reading normalized using its max/min values.
-     * @return The magnetometer's normalized X axis reading.
-     */
-    float readX();
-
-    /**
-     * @brief Reads and calculates the magnetometer's Y axis reading normalized using its max/min values.
-     * @return The magnetometer's normalized Y axis reading.
-     */
-    float readY();
-
-    /**
-     * @brief Reads and calculates the magnetometer's Z axis reading normalized using its max/min values.
-     * @return The magnetometer's normalized Z axis reading.
-     */
-    float readZ();
-
-    /**
      * @brief Obtains the most recent magnetometer normalized x reading.
      * @return The most recent normalized x reading.
      */
@@ -193,6 +175,21 @@ class QMC5883L{
      * @return The most recent normalized z reading.
      */
     float getZ(){return this->z;}
+
+    /**
+     * @brief Obtains the most recent magnetometer x reading in Gauss.
+     */
+    float getXGauss(){return this->xGauss;}
+
+    /**
+     * @brief Obtains the most recent magnetometer y reading in Gauss.
+     */
+    float getYGauss(){return this->yGauss;}
+
+    /**
+     * @brief Obtains the most recent magnetometer z reading in Gauss.
+     */
+    float getZGauss(){return this->zGauss;}
 
     /**
      * @brief Calculates the azimuth/heading of the compass.
@@ -266,6 +263,21 @@ class QMC5883L{
     float x, y, z;
 
     /**
+     * @brief The most recent magnetometer reading in the indicated axis in Gauss.
+     */
+    float xGauss, yGauss, zGauss;
+
+    /**
+     * @brief The +/- range of magnetometer readings in Gauss.
+     */
+    int range;
+
+    /**
+     * @brief The LSB resolution of the magnetometer.
+     */
+    float lsbRes;
+
+    /**
      * @brief Reads raw magnetometer data from a specified axis and updates internal state.
      * @param msbReg The register address containing the MSB axis information.
      * @param lsbReg The register address containing the LSB axis information.
@@ -274,7 +286,7 @@ class QMC5883L{
      * @param maxVal The maximum value for this axis.
      * @param minVal The minimum value for this axis.
      */
-    int16_t readAxisRaw(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, int16_t maxVal, int16_t minVal);
+    int16_t readAxis(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, float& gaussStorage, int16_t maxVal, int16_t minVal);
 
     /**
      * @brief Normalize magnetometer reading to a value between -1 and 1.
