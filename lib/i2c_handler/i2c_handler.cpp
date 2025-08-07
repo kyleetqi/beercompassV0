@@ -40,6 +40,13 @@ bool i2cWrite(uint8_t addr, uint8_t reg, uint8_t data, uint8_t mask){
   return i2cWrite(addr, reg, config);
 }
 
+bool i2cWriteBit(uint8_t addr, uint8_t reg, bool myBit, uint8_t bitPos){
+  if (bitPos > 7){
+    return false;
+  }
+  return i2cWrite(addr, reg, (uint8_t)myBit, 1 << bitPos);
+}
+
 uint8_t i2cRead(uint8_t addr, uint8_t reg){
     Wire.beginTransmission(addr);
     Wire.write(reg);
