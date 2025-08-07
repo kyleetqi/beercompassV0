@@ -74,10 +74,10 @@ bool QMC5883L::setDownSampleRate(uint8_t osr2){
     return i2cWrite(this->address, CTRLA_REG, bits, 0b11000000);
 }
 
-bool QMC5883L::setRange(uint8_t rng){
+bool QMC5883L::setRange(uint8_t range){
     // Set bits based on mode selected
     uint8_t bits;
-    switch(rng){
+    switch(range){
         case 30: bits = 0b00; break;
         case 12: bits = 0b01; break;
         case 8: bits = 0b10; break;
@@ -85,7 +85,6 @@ bool QMC5883L::setRange(uint8_t rng){
         default: return false;
     }
     bits <<= 2;
-    this->range = rng;
     this->lsbRes = float(range)/32768.0f;
 
     // Set range

@@ -69,7 +69,7 @@ class QMC5883L{
      * @param rng Magnetic range in Gauss. Valid values: 2, 8, 12, 30. Default value is 2.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setRange(uint8_t rng = 2);
+    bool setRange(uint8_t range = 2);
 
     /**
      * @brief typedef defining the modes for the setResetMode function
@@ -268,11 +268,6 @@ class QMC5883L{
     float xGauss, yGauss, zGauss;
 
     /**
-     * @brief The +/- range of magnetometer readings in Gauss.
-     */
-    int range;
-
-    /**
      * @brief The LSB resolution of the magnetometer.
      */
     float lsbRes;
@@ -285,6 +280,7 @@ class QMC5883L{
      * @param normStorage the variable where the normalized reading should be stored.
      * @param maxVal The maximum value for this axis.
      * @param minVal The minimum value for this axis.
+     * @return the raw reading from the registers.
      */
     int16_t readAxis(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, float& gaussStorage, int16_t maxVal, int16_t minVal);
 
