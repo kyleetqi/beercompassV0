@@ -31,7 +31,6 @@ class MPU6500{
      */
     bool setSampleRateDivider(uint8_t divider);
 
-    // TODO: Maybe change the parameter to a bool
     /**
      * @brief Sets the FIFO mode of the IC.
      * 
@@ -66,18 +65,10 @@ class MPU6500{
     /**
      * @brief Sets the gyroscope and temperature sensor LPF.
      * @param isOn true to enable the LPF, false to disable it.
-     * @param bandwidth The bandwidth of the LPF.
+     * @param bandwidth The bandwidth of the LPF. Valid values: 5, 10, 20, 41, 92, 184, 250, 3600 (Hz). Default value: 250.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setGyroLPF(bool isOn, uint8_t bandwidth = 250);
-
-    // TODO: choose sensible default parameter value.
-    /**
-     * @brief Set the gryo full scale range.
-     * @param range The desired range. Valid values: 250, 500, 1000, 200 (dps). Default value: 250.
-     * @return true if configuration is successful, false otherwise.
-     */
-    bool setGyroRange(uint8_t range = 250);
+    bool setGyroLPF(bool isOn = 1, uint8_t bandwidth = 250);
 
     /**
      * @brief Enables/disables the gyroscope and temperature sensor LPF.
@@ -89,11 +80,20 @@ class MPU6500{
 
     // TODO: choose sensible default parameter value.
     /**
-     * @brief Set the accelerometer full scale range.
-     * @param range The desired range. Valid values: 2, 4, 8, 16 (g). Default value: 2.
+     * @brief Set the gyro full scale range.
+     * @param range The desired range. Valid values: 250, 500, 1000, 200 (dps). Default value: 250.
+     * @return true if configuration is successful, false otherwise.
+     */
+    bool setGyroRange(uint8_t range = 250);
+
+    // TODO: choose sensible default parameter value.
+    /**
+     * @brief Sets the accelerometer LPF.
+     * @param isON true to enable the LPF, false to disable it.
+     * @param bandwidth the bandwidth of the LPF. Valid values: 5, 10, 20, 41, 92, 184, 860 (Hz). Default value: 460.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setAccelRange(uint8_t range = 2);
+    bool setAccelLPF(bool isOn, uint8_t bandwidth = 460);
 
     /**
      * @brief Enables/disables the accelerometer LPF.
@@ -104,79 +104,137 @@ class MPU6500{
 
     // TODO: choose sensible default parameter value.
     /**
-     * @brief Sets the accelerometer LPF.
-     * @param isON true to enable the LPF, false to disable it.
-     * @param bandwidth the bandwidth of the LPF.
+     * @brief Set the accelerometer full scale range.
+     * @param range The desired range. Valid values: 2, 4, 8, 16 (g). Default value: 2.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setAccelLPFMode(bool isOn, uint8_t bandwidth = 460);
+    bool setAccelRange(uint8_t range = 2);
 
     /**
-     * @brief Read the gyroscope's X reading.
+     * @brief Read the gyroscope's X registers.
      * @return The gyroscope's X reading.
      */
     int16_t readGyroX();
 
     /**
-     * @brief Read the gyroscope's Y reading.
+     * @brief Read the gyroscope's Y registers.
      * @return The gyroscope's Y reading.
      */
     int16_t readGyroY();
 
     /**
-     * @brief Read the gyroscope's Z reading.
+     * @brief Read the gyroscope's Z registers.
      * @return The gyroscope's Z reading.
      */
     int16_t readGyroZ();
 
-    // TODO: Create doxygen.
     /**
-     * @brief 
-     * @return
+     * @brief Obtains the most recent gyroscope X reading in rad/s.
+     * @return The most recent raw gyroscope X reading in rad/s.
      */
-    int16_t getGyroX(){return this->xGyro;}
-    int16_t getGyroY(){return this->yGyro;}
-    int16_t getGyroZ(){return this->zGyro;}
+    float getGyroX(){return this->xGyro;}
 
     /**
-     * @brief Read the accelerometer's X reading.
+     * @brief Obtains the most recent gyroscope Y reading in rad/s.
+     * @return The most recent raw gyroscope Y reading in rad/s.
+     */
+    float getGyroY(){return this->yGyro;}
+
+    /**
+     * @brief Obtains the most recent gyroscope Z reading in rad/s.
+     * @return The most recent raw gyroscope Z reading in rad/s.
+     */
+    float getGyroZ(){return this->zGyro;}
+
+    /**
+     * @brief Obtains the most recent raw gyroscope X reading.
+     * @return The most recent raw gyroscope X reading.
+     */
+    int16_t getGyroXRaw(){return this->xGyroRaw;}
+
+    /**
+     * @brief Obtains the most recent raw gyroscope Y reading.
+     * @return The most recent raw gyroscope Y reading.
+     */
+    int16_t getGyroYRaw(){return this->yGyroRaw;}
+
+    /**
+     * @brief Obtains the most recent raw gyroscope Y reading.
+     * @return The most recent raw gyroscope Y reading.
+     */
+    int16_t getGyroZRaw(){return this->zGyroRaw;}
+
+    /**
+     * @brief Read the accelerometer's X registers.
      * @return The acceleromter's X reading.
      */
     int16_t readAccelX();
 
     /**
-     * @brief Read the accelerometer's Y reading.
+     * @brief Read the accelerometer's Y registers.
      * @return The acceleromter's Y reading.
      */
     int16_t readAccelY();
 
     /**
-     * @brief Read the accelerometer's Z reading.
+     * @brief Read the accelerometer's Z registers.
      * @return The acceleromter's Z reading.
      */
     int16_t readAccelZ();
 
-    // TODO: Create doxygen.
     /**
-     * @brief 
-     * @return
+     * @brief Obtains the most recent accelerometer X reading in m/s^2.
+     * @return The most recent accelerometer X reading in m/s^2.
      */
-    int16_t getAccelX(){return this->xAccel;}
-    int16_t getAccelY(){return this->yAccel;}
-    int16_t getAccelZ(){return this->zAccel;}
+    float getAccelX(){return this->xAccel;}
 
     /**
-     * @brief Read the device's temperature reading.
-     * @return The device's temperature reading in Celsius.
+     * @brief Obtains the most recent accelerometer Y reading in m/s^2.
+     * @return The most recent accelerometer Y reading in m/s^2.
+     */
+    float getAccelY(){return this->yAccel;}
+
+    /**
+     * @brief Obtains the most recent accelerometer Z reading in m/s^2.
+     * @return The most recent accelerometer Z reading in m/s^2.
+     */
+    float getAccelZ(){return this->zAccel;}
+
+    /**
+     * @brief Obtains the most recent raw accelerometer X reading.
+     * @return The most recent raw accelerometer X reading.
+     */
+    int16_t getAccelXRaw(){return this->xAccelRaw;}
+
+    /**
+     * @brief Obtains the most recent raw accelerometer Y reading.
+     * @return The most recent raw accelerometer Y reading.
+     */
+    int16_t getAccelYRaw(){return this->yAccelRaw;}
+
+    /**
+     * @brief Obtains the most recent raw accelerometer Z reading.
+     * @return The most recent raw accelerometer Z reading.
+     */
+    int16_t getAccelZRaw(){return this->zAccelRaw;}
+
+    /**
+     * @brief Read the device's temperature registers.
+     * @return The device's temperature reading.
      */
     int16_t readTemp();
 
-    // TODO: Create doxygen.
     /**
-     * @brief 
-     * @return
+     * @brief Obtains the most recent temperature reading in C.
+     * @return The most recent temperature reading in C.
      */
-    int16_t getTemp(){return this->temp;}
+    float getTemp(){return this->temp;}
+
+    /**
+     * @brief Obtains the most recent raw temperature reading.
+     * @return The most recent raw temperature reading.
+     */
+    int16_t getTempRaw(){return this->tempRaw;}
 
     /** 
      * @brief Resets the IC's registers.
@@ -239,6 +297,13 @@ class MPU6500{
     bool enableZAccel(bool isEnable);
 
     /**
+     * @brief Enables/disables the accelerometers.
+     * @param isEnable true to enable the accelerometers, false otherwise.
+     * @return true if the operation is successful, false otherwise.
+     */
+    bool enableAccel(bool isEnable);
+
+    /**
      * @brief Enables/disables the X gyroscope.
      * @param isEnable true to enable the gyroscope, false otherwise.
      * @return true if the operation is successful, false otherwise.
@@ -258,13 +323,6 @@ class MPU6500{
      * @return true if the operation is successful, false otherwise.
      */
     bool enableZGyro(bool isEnable);
-
-    /**
-     * @brief Enables/disables the accelerometers.
-     * @param isEnable true to enable the accelerometers, false otherwise.
-     * @return true if the operation is successful, false otherwise.
-     */
-    bool enableAccel(bool isEnable);
 
     /**
      * @brief Enables/disables the gyroscopes.
@@ -292,26 +350,51 @@ class MPU6500{
     /**
      * @brief The most recent gyroscope reading in the specified axis.
      */
-     int16_t xGyro, yGyro, zGyro;
+    int16_t xGyroRaw, yGyroRaw, zGyroRaw;
+
+    /**
+     * @brief The most recent gyroscope reading in the specified axis in rad/s.
+     */
+    float xGyro, yGyro, zGyro;
 
     /**
      * @brief The most recent accelerometer reading in the specified axis.
      */
-     int16_t xAccel, yAccel, zAccel;
+    int16_t xAccelRaw, yAccelRaw, zAccelRaw;
+
+    /**
+     * @brief The most recent accelerometer reading in the specified axis in m/s^2.
+     */
+    float xAccel, yAccel, zAccel;
 
     /**
      * @brief The most recent temperature reading in celsius.
      */
-     int16_t temp;
+    float temp;
 
     /**
-     * @brief Sets a single bit in a desired chip register. Used for set/reset purposes.
-     * @param reg The desired register to be modifed.
-     * @param myBit The bit to write to the register.
-     * @param bitPos The target bit position in the desired register.
-     * @return true if the operation is successful, false otherwise.
+     * @brief The most recent temperature reading.
      */
-    bool setRegBit(uint8_t reg, bool myBit, uint8_t bitPos);
+    int16_t tempRaw;
+
+    /**
+     * @brief The LSB resolution of the accelerometer.
+     */
+    float lsbResAccel;
+
+    /**
+     * @brief The LSB resolution of the gyroscope.
+     */
+    float lsbResGyro;
+
+    // TODO: Create doxygen
+    /**
+     * @brief
+     * @param
+     * @param 
+     * @return
+     */
+    int16_t readSensor(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& storage, uint8_t sensorType);
 };
 
 #endif
