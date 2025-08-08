@@ -19,13 +19,25 @@
 
 // Magnetometer global declarations
 #define QMC5883L_ADDR 0x2C // I2C address of QMC5883L
-#define CALIBRATION_TIME 5000 
+#define QMC5883L_CALIBRATION_TIME 5000 
+#define QMC5883L_OUTPUT_RATE 10 // Data output in Hz
+#define QMC5883L_OVERSAMPLE_RATE 2 // Oversample rate
+#define QMC5883L_DOWNSAMPLE_RATE 4 // Downsample rate
+#define QMC5883L_RANGE // +/- range in Gauss
 
 // Create magnetometer object
-QMC5883L myCompass(QMC5883L_ADDR);
+QMC5883L qmc5883l(QMC5883L_ADDR);
+
+// Accel/Gyro global declarations
+#define MPU6500_ADDR 0x68
+#define MPU6500_SAMPLE_RATE_DIVIDER 1000 // TODO: Choose value
+#define MPU6500_GYRO_BANDWIDTH 250 // TODO: Determine value
+
+// Create MPU6500 object
+MPU6500 mpu6500(MPU6500_ADDR);
 
 // Keeps track of setup errors
-bool setupSuccessful = true;
+bool setupSuccess = true;
 
 void setup() {
   // Initialize Serial and wait for it to get ready
@@ -35,60 +47,60 @@ void setup() {
   // Initialize I2C bus
   if(!i2cInit(SDA_PIN, SCL_PIN, I2C_FREQ)){
     Serial.println("I2C failed to initialize!");
-    setupSuccessful = false;
+    setupSuccess = false;
   }
 
-  // Debug purposes: scan for I2C devices
+  // Scan for I2C devices (if necessary)
   // i2cScan();
 
   // Configure magnetometer settings
-  setupSuccessful &= myCompass.resetRegisters();
-  setupSuccessful &= myCompass.setMode(QMC5883L::MODE_CONTINUOUS);
-  setupSuccessful &= myCompass.setOutputRate(100);
-  setupSuccessful &= myCompass.setOverSampleRate(2);
-  setupSuccessful &= myCompass.setDownSampleRate(4);
-  setupSuccessful &= myCompass.setSetResetMode(QMC5883L::SET_ON);
-  setupSuccessful &= myCompass.setRange(2);
-  if(!setupSuccessful){
-    Serial.println("Compass configuration failed!");
-  }
-  if(setupSuccessful){
-    myCompass.calibrate(CALIBRATION_TIME);
-  }
+  setupSuccess &= qmc5883l.resetRegisters();
+  setupSuccess &= qmc5883l.setMode(QMC5883L::MODE_CONTINUOUS);
+  setupSuccess &= qmc5883l.setOutputRate(QMC5883L_OUTPUT_RATE);
+  setupSuccess &= qmc5883l.setOverSampleRate(QMC5883L_OVERSAMPLE_RATE);
+  setupSuccess &= qmc5883l.setDownSampleRate(QMC5883L_DOWNSAMPLE_RATE);
+  setupSuccess &= qmc5883l.setSetResetMode(QMC5883L::SET_ON);
+  setupSuccess &= qmc5883l.setRange(QMC5883L_RANGE);
 
-  // // For debugging purposes, manually set calibration values
-  // myCompass.setMaxX(12781);
-  // myCompass.setMaxY(13128);
-  // myCompass.setMaxZ(6740);
-  // myCompass.setMinX(-16980);
-  // myCompass.setMinY(-13560);
-  // myCompass.setMinZ(-10305); 
+  // Configure accel/gyro settings
+  setupSuccess &= mpu6500.resetRegisters();
+  setupSuccess &= mpu6500.setSampleRateDivider(MPU6500_SAMPLE_RATE_DIVIDER);
+  setupSuccess &= mpu6500.setFIFOMode(1); // Choose value
+  setupSuccess &= mpu6500.setFSync(MPU6500::EXT_SOURCE_DISABLE);
+  setupSuccess &= mpu6500.setGyroLPF(1, MPU6500_GYRO_BANDWIDTH);
+  setupSuccess &= mpu6500.setGyroRange(250); // Choose value
+  setupSuccess &= mpu6500.setAccelLPF(1, 460); // Choose bandwidth
+  setupSuccess &= mpu6500.setAccelRange(2); // Choose value
+  setupSuccess &= mpu6500.enableTempSense(false);
+
+  // Calibrate compass
+  qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
 }
 
 void loop() {
   // Setup fail condition
-  if(!setupSuccessful){
+  if(!setupSuccess){
     Serial.println("Setup failed!");
     while(true){}
   }
 
   // // // Testing to see if this actually works
-  if(myCompass.isDRDY() == 1){
+  if(qmc5883l.isDRDY() == 1){
     // Serial.println("Start reading");
 
     // Serial.print("X value: ");
-    // Serial.print(myCompass.getX());
+    // Serial.print(qmc5883l.getXGauss());
     // Serial.print(" Y value: ");
-    // Serial.print(myCompass.getY());
+    // Serial.print(qmc5883l.getYGauss());
     // Serial.print(" Z value: ");
-    // Serial.println(myCompass.getZ());
+    // Serial.println(qmc5883l.getZGauss());
 
     Serial.print("X raw: ");
-    Serial.print(myCompass.readXRaw());
+    Serial.print(qmc5883l.readX());
     Serial.print(" Y raw: ");
-    Serial.print(myCompass.readYRaw());
+    Serial.print(qmc5883l.readY());
     Serial.print(" Z raw: ");
-    Serial.println(myCompass.readZRaw());
+    Serial.println(qmc5883l.readZ());
 
     // Serial.println("End reading");
   } else {
