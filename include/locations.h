@@ -1,10 +1,24 @@
 #ifndef LOCATIONS_H
 #define LOCATIONS_H
 
-// Optional: Add this file to .gitignore
-// The following data set is the coordinates of every LCBO
+#include <Arduino.h>
+
+struct Location {
+    float x; // Latitude
+    float y; // Longitude
+};
 
 // TODO: Get location of every LCBO
-const float LOCATIONS[10][2] = {0};
+const Location LOCATIONS[] = {
+    {0, 0},
+    {0, 0},
+    {0, 0},
+    {0, 0},
+};
+
+// Size of locations array
+const int nLocations = sizeof(LOCATIONS)/sizeof(LOCATIONS[0]);
+
+Location closestLocation(float myX, float myY, Location* locations, int nLocations);
 
 #endif
