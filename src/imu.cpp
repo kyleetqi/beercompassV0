@@ -23,3 +23,8 @@ float true_azimuth(float yaw){
     }
     return yaw;
 }
+
+float true_azimuth(float ax, float ay, float az, float mx, float my, float mz){
+    float yaw = yaw_accel_mag(ax, ay, az, mx, my, mz);
+    return true_azimuth(yaw);
+}
