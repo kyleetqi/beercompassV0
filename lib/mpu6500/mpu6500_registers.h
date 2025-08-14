@@ -22,6 +22,8 @@
 #define ACCEL_CONFIG 0x1C
 #define ACCEL_CONFIG_2 0x1D
 
+#define INT_STATUS 0x3A
+
 #define ACCEL_XOUT_H 0x3B
 #define ACCEL_XOUT_L 0x3C
 #define ACCEL_YOUT_H 0x3D
