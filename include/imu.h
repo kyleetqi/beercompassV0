@@ -12,7 +12,6 @@
  * @note Accuracy is best when the board isn't experiencing high jerk.
  */
 
-
 #ifndef IMU_H
 #define IMU_H
 
@@ -24,6 +23,7 @@
 
 /**
  * @brief Calculates the pitch using accelerometer readings.
+ * 
  * @param ax The x reading of the accelerometer.
  * @param ay The y reading of the accelerometer.
  * @param az The z reading of the accelerometer.
@@ -33,6 +33,7 @@ float pitch_accel(float ax, float ay, float az);
 
 /**
  * @brief Calculates the roll using accelerometer readings.
+ * 
  * @param ay The y reading of the accelerometer.
  * @param az The z reading of the accelerometer.
  * @return The roll in radians.
@@ -41,6 +42,7 @@ float roll_accel(float ay, float az);
 
 /**
  * @brief Calculates the yaw using accelerometer and magnetometer readings.
+ * 
  * @param ax The x reading of the accelerometer.
  * @param ay The y reading of the accelerometer.
  * @param az The z reading of the accelerometer.
@@ -57,5 +59,18 @@ float yaw_accel_mag(float ax, float ay, float az, float mx, float my, float mz);
  * @return The azimuth in degrees, following compass convention.
  */
 float true_azimuth(float yaw);
+
+/**
+ * @brief Calculates the board's tilt-corrected azimuth.
+ * 
+ * @param ax The x reading of the accelerometer.
+ * @param ay The y reading of the accelerometer.
+ * @param az The z reading of the accelerometer.
+ * @param mx The x reading of the magnetometer normalized to [-1,1].
+ * @param my The y reading of the magnetometer normalized to [-1,1].
+ * @param mz The z reading of the magnetometer normalized to [-1,1].
+ * @return The azimuth in degrees, following compass convention.
+ */
+float true_azimuth(float ax, float ay, float az, float mx, float my, float mz);
 
 #endif
