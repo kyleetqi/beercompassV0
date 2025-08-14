@@ -5,7 +5,7 @@
 
 class NEO6M {
     public:
-
+    
     bool begin();
     bool update();
 
