@@ -36,7 +36,7 @@ bool MPU6500::setFSync(ExtSyncSource source){
 }
 
 
-bool MPU6500::setGyroLPF(bool isOn, uint8_t bandwidth){
+bool MPU6500::setGyroLPF(bool isOn, uint16_t bandwidth){
     // Enable/Disable the LPF
     if(!(this->gyroLPFEnable(isOn))){
         return false;
@@ -74,7 +74,7 @@ bool MPU6500::gyroLPFEnable(bool isOn){
     return i2cWrite(this->address, GYRO_CONFIG, bits, 0b00000011);
 }
 
-bool MPU6500::setGyroRange(uint8_t range){
+bool MPU6500::setGyroRange(uint16_t range){
     // Set bits based on mode selected
     uint8_t bits;
     switch(range){
@@ -91,7 +91,7 @@ bool MPU6500::setGyroRange(uint8_t range){
     return i2cWrite(this->address, GYRO_CONFIG, bits, 0b00011000);
 }
 
-bool MPU6500::setAccelLPF(bool isOn, uint8_t bandwidth){
+bool MPU6500::setAccelLPF(bool isOn, uint16_t bandwidth){
     // Enable/Disable the LPF
     if(!(this->accelLPFEnable(isOn))){
         return false;
@@ -146,6 +146,10 @@ bool MPU6500::setAccelRange(uint8_t range){
     return i2cWrite(this->address, ACCEL_CONFIG, bits, 0b00011000);
 }
 
+bool MPU6500::isDRDY(){
+    return (i2cRead(this->address, INT_STATUS) & 1) != 0;
+}
+
 int16_t MPU6500::readGyroX(){
     return readSensor(GYRO_XOUT_H, GYRO_XOUT_L, this->xGyroRaw, this->xGyro, 0);
 }
@@ -158,6 +162,12 @@ int16_t MPU6500::readGyroZ(){
     return readSensor(GYRO_ZOUT_H, GYRO_ZOUT_L, this->zGyroRaw, this->zGyro, 0);
 }
 
+void MPU6500::readGyro(){
+    this->readGyroX();
+    this->readGyroY();
+    this->readGyroZ();
+}
+
 int16_t MPU6500::readAccelX(){
     return readSensor(ACCEL_XOUT_H, ACCEL_XOUT_L, this->xAccelRaw, this->xAccel, 1);
 }
@@ -168,6 +178,12 @@ int16_t MPU6500::readAccelY(){
 
 int16_t MPU6500::readAccelZ(){
     return readSensor(ACCEL_ZOUT_H, ACCEL_ZOUT_L, this->zAccelRaw, this->zAccel, 1);
+}
+
+void MPU6500::readAccel(){
+    this->readAccelX();
+    this->readAccelY();
+    this->readAccelZ();
 }
 
 int16_t MPU6500::readTemp(){

@@ -68,7 +68,7 @@ class MPU6500{
      * @param bandwidth The bandwidth of the LPF. Valid values: 5, 10, 20, 41, 92, 184, 250, 3600 (Hz). Default value: 250.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setGyroLPF(bool isOn = 1, uint8_t bandwidth = 250);
+    bool setGyroLPF(bool isOn = 1, uint16_t bandwidth = 250);
 
     /**
      * @brief Enables/disables the gyroscope and temperature sensor LPF.
@@ -84,7 +84,7 @@ class MPU6500{
      * @param range The desired range. Valid values: 250, 500, 1000, 200 (dps). Default value: 250.
      * @return true if configuration is successful, false otherwise.
      */
-    bool setGyroRange(uint8_t range = 250);
+    bool setGyroRange(uint16_t range = 250);
 
     // TODO: choose sensible default parameter value.
     /**
@@ -93,7 +93,7 @@ class MPU6500{
      * @param bandwidth the bandwidth of the LPF. Valid values: 5, 10, 20, 41, 92, 184, 860 (Hz). Default value: 460.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setAccelLPF(bool isOn, uint8_t bandwidth = 460);
+    bool setAccelLPF(bool isOn, uint16_t bandwidth = 460);
 
     /**
      * @brief Enables/disables the accelerometer LPF.
@@ -109,6 +109,12 @@ class MPU6500{
      * @return true if the configuration is successful, false otherwise.
      */
     bool setAccelRange(uint8_t range = 2);
+
+    /** 
+     * @brief Tells you if the IC has data ready.
+     * @return true if the IC has new data ready, false otherwise.
+     */
+    bool isDRDY();
 
     /**
      * @brief Read the gyroscope's X registers.
@@ -127,6 +133,12 @@ class MPU6500{
      * @return The gyroscope's Z reading.
      */
     int16_t readGyroZ();
+
+    // TODO: Create Doxygen.
+    /**
+     * @brief
+     */
+    void readGyro();
 
     /**
      * @brief Obtains the most recent gyroscope X reading in rad/s.
@@ -181,6 +193,9 @@ class MPU6500{
      * @return The acceleromter's Z reading.
      */
     int16_t readAccelZ();
+
+    // TODO: Create Doxygen
+    void readAccel();
 
     /**
      * @brief Obtains the most recent accelerometer X reading in m/s^2.
