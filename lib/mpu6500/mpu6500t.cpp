@@ -140,7 +140,7 @@ bool MPU6500::setAccelRange(uint8_t range){
         default: return false;
     }
     bits <<= 3;
-    this->lsbResAccel = float(range)/32768.0f;
+    this->lsbResAccel = ((float)range * GRAVITY)/32768.0f;
 
     // Write bits to register
     return i2cWrite(this->address, ACCEL_CONFIG, bits, 0b00011000);
