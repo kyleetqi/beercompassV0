@@ -5,12 +5,13 @@
 #include "qmc5883l.h"
 #include "mpu6500.h"
 #include "neo_6m.h"
+#include "imu.h"
 
 // OLED global declarations
-#define OLED_ADDR 0x3c
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
-#define OLED_RESET -1
+#define OLED_ADDR 0x3c // I2C address of OLED
+#define SCREEN_WIDTH 128 // Screen width
+#define SCREEN_HEIGHT 64 // Screen height
+#define OLED_RESET -1 // OLED reset macro
 
 // I2C global declarations
 #define SDA_PIN 21 // I2C SDA pin
@@ -23,28 +24,38 @@
 #define QMC5883L_OUTPUT_RATE 10 // Data output in Hz
 #define QMC5883L_OVERSAMPLE_RATE 2 // Oversample rate
 #define QMC5883L_DOWNSAMPLE_RATE 4 // Downsample rate
-#define QMC5883L_RANGE // +/- range in Gauss
+#define QMC5883L_RANGE 2 // +/- range in Gauss
 
 // Create magnetometer object
 QMC5883L qmc5883l(QMC5883L_ADDR);
 
 // Accel/Gyro global declarations
-#define MPU6500_ADDR 0x68
-#define MPU6500_SAMPLE_RATE_DIVIDER 1000 // TODO: Choose value
-#define MPU6500_GYRO_BANDWIDTH 250 // TODO: Determine value
+#define MPU6500_ADDR 0x68 // I2C address of MPU6500
+#define MPU6500_SAMPLE_RATE_DIVIDER 9 // Eq. to 100 Hz output rate
+#define MPU6500_FIFO_MODE 0 // Overwrite old data
+#define MPU6500_ACCEL_BANDWIDTH 44 // Accel LPF cutoff frequency
+#define MPU6500_ACCEL_RANGE 2 // +/- range in m/s^2
+#define MPU6500_TEMP_DISABLE 0 // Disable temp sensor
+#define MPU6500_GYRO_DISABLE 0 // Disable gyro sensor
+// The following macros are unecessary if gyro remains disabled.
+// #define MPU6500_GYRO_BANDWIDTH 44
+// #define MPU6500_GYRO_RANGE 250
 
 // Create MPU6500 object
 MPU6500 mpu6500(MPU6500_ADDR);
 
-// Keeps track of setup errors
+// Struct for storing sensor information
+Vec3 accel, mag;
+
+// Keep track of setup errors
 bool setupSuccess = true;
 
 void setup() {
-  // Initialize Serial and wait for it to get ready
+  // Initialize Serial
   Serial.begin(115200);
   delay(1000);
 
-  // Initialize I2C bus
+  // Initialize I2C
   if(!i2cInit(SDA_PIN, SCL_PIN, I2C_FREQ)){
     Serial.println("I2C failed to initialize!");
     setupSuccess = false;
@@ -65,13 +76,15 @@ void setup() {
   // Configure accel/gyro settings
   setupSuccess &= mpu6500.resetRegisters();
   setupSuccess &= mpu6500.setSampleRateDivider(MPU6500_SAMPLE_RATE_DIVIDER);
-  setupSuccess &= mpu6500.setFIFOMode(1); // Choose value
+  setupSuccess &= mpu6500.setFIFOMode(MPU6500_FIFO_MODE); // Choose value
   setupSuccess &= mpu6500.setFSync(MPU6500::EXT_SOURCE_DISABLE);
-  setupSuccess &= mpu6500.setGyroLPF(1, MPU6500_GYRO_BANDWIDTH);
-  setupSuccess &= mpu6500.setGyroRange(250); // Choose value
-  setupSuccess &= mpu6500.setAccelLPF(1, 460); // Choose bandwidth
-  setupSuccess &= mpu6500.setAccelRange(2); // Choose value
-  setupSuccess &= mpu6500.enableTempSense(false);
+  setupSuccess &= mpu6500.setAccelLPF(1, MPU6500_ACCEL_BANDWIDTH);
+  setupSuccess &= mpu6500.setAccelRange(MPU6500_ACCEL_RANGE);
+  // Disable gyro for now
+  // setupSuccess &= mpu6500.setGyroLPF(1, MPU6500_GYRO_BANDWIDTH);
+  // setupSuccess &= mpu6500.setGyroRange(MPU6500_GYRO_RANGE);
+  setupSuccess &= mpu6500.enableGyro(MPU6500_GYRO_DISABLE);
+  setupSuccess &= mpu6500.enableTempSense(MPU6500_TEMP_DISABLE);
 
   // Calibrate compass
   qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
@@ -84,28 +97,48 @@ void loop() {
     while(true){}
   }
 
-  // // // Testing to see if this actually works
+  // Get magnetometer readings
   if(qmc5883l.isDRDY() == 1){
-    // Serial.println("Start reading");
-
-    // Serial.print("X value: ");
-    // Serial.print(qmc5883l.getXGauss());
-    // Serial.print(" Y value: ");
-    // Serial.print(qmc5883l.getYGauss());
-    // Serial.print(" Z value: ");
-    // Serial.println(qmc5883l.getZGauss());
-
-    Serial.print("X raw: ");
-    Serial.print(qmc5883l.readX());
-    Serial.print(" Y raw: ");
-    Serial.print(qmc5883l.readY());
-    Serial.print(" Z raw: ");
-    Serial.println(qmc5883l.readZ());
-
-    // Serial.println("End reading");
-  } else {
-    Serial.println("Data is not ready!");
+    qmc5883l.read();
+    mag.x = qmc5883l.getX();
+    mag.y = qmc5883l.getY();
+    mag.z = qmc5883l.getZ();
   }
 
-  delay(300);
+  // Get accelerometer readings
+  if(mpu6500.isDRDY() == 1){
+    mpu6500.readAccel();
+    accel.x = mpu6500.getAccelX();
+    accel.y = mpu6500.getAccelY();
+    accel.z = mpu6500.getAccelZ();
+  }
+
+  // Get tilt-compensated azimuth
+  float azimuth = true_azimuth(accel.x, accel.y, accel.z, mag.x, mag.y, mag.z);
+
+  Serial.println("START READING");
+
+  // Print accelerometer readings
+  Serial.print("X accel: ");
+  Serial.print(accel.x);
+  Serial.print(" Y accel: ");
+  Serial.print(accel.y);
+  Serial.print(" Z accel: ");
+  Serial.println(accel.z);
+
+  // Print magnetometer readings
+  Serial.print("X mag: ");
+  Serial.print(mag.x);
+  Serial.print(" Y mag: ");
+  Serial.print(mag.y);
+  Serial.print(" Z mag: ");
+  Serial.println(mag.z);
+
+  // Print tilt-compensated azimuth
+  Serial.print("Corrected azimuth: ");
+  Serial.println((int)azimuth);
+
+  Serial.println("END READING");
+
+  delay(200);
 }
