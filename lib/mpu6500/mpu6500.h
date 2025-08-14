@@ -4,17 +4,23 @@
 #include <Arduino.h>
 #include "mpu6500_registers.h"
 
+#ifndef GRAVITY
+#define GRAVITY 9.10665
+#endif
+
 class MPU6500{
     public:
 
     /**
      * @brief Class constructor.
+     * 
      * @param myAddress The I2C address of the object.
      */
     MPU6500(uint8_t myAddress);
 
     /**
      * @brief Set the gyroscope's reading offsets.
+     * 
      * @param offsetX The gyroscope's X offset.
      * @param offsetY The gyroscope's Y offset.
      * @param offsetZ The gyroscope's Z offset.
@@ -26,6 +32,7 @@ class MPU6500{
     // TODO: Add a default value for divier.
     /**
      * @brief Sets the sample rate divider for the MPU6500.
+     * 
      * @param divider value to write to the register.
      * @return true if the operation is successful, false otherwise.
      */
@@ -64,6 +71,7 @@ class MPU6500{
     // TODO: choose sensible default parameter value.
     /**
      * @brief Sets the gyroscope and temperature sensor LPF.
+     * 
      * @param isOn true to enable the LPF, false to disable it.
      * @param bandwidth The bandwidth of the LPF. Valid values: 5, 10, 20, 41, 92, 184, 250, 3600 (Hz). Default value: 250.
      * @return true if the configuration is successful, false otherwise.
@@ -72,6 +80,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the gyroscope and temperature sensor LPF.
+     * 
      * @note If the LPF is disabled, FCHOICE_B bits default to 01.
      * @param inOn true to enable the LPF, false to disable it.
      * @return true if the configuration is successful, false otherwise.
@@ -81,6 +90,7 @@ class MPU6500{
     // TODO: choose sensible default parameter value.
     /**
      * @brief Set the gyro full scale range.
+     * 
      * @param range The desired range. Valid values: 250, 500, 1000, 200 (dps). Default value: 250.
      * @return true if configuration is successful, false otherwise.
      */
@@ -89,6 +99,7 @@ class MPU6500{
     // TODO: choose sensible default parameter value.
     /**
      * @brief Sets the accelerometer LPF.
+     * 
      * @param isON true to enable the LPF, false to disable it.
      * @param bandwidth the bandwidth of the LPF. Valid values: 5, 10, 20, 41, 92, 184, 860 (Hz). Default value: 460.
      * @return true if the configuration is successful, false otherwise.
@@ -97,6 +108,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the accelerometer LPF.
+     * 
      * @param isOn true to enable the LPF, false to disable it.
      * @return true if the configuration is successful, false otherwise.
      */
@@ -105,6 +117,7 @@ class MPU6500{
     // TODO: choose sensible default parameter value.
     /**
      * @brief Set the accelerometer full scale range.
+     * 
      * @param range The desired range. Valid values: 2, 4, 8, 16 (g). Default value: 2.
      * @return true if the configuration is successful, false otherwise.
      */
@@ -112,24 +125,28 @@ class MPU6500{
 
     /** 
      * @brief Tells you if the IC has data ready.
+     * 
      * @return true if the IC has new data ready, false otherwise.
      */
     bool isDRDY();
 
     /**
      * @brief Read the gyroscope's X registers.
+     * 
      * @return The gyroscope's X reading.
      */
     int16_t readGyroX();
 
     /**
      * @brief Read the gyroscope's Y registers.
+     * 
      * @return The gyroscope's Y reading.
      */
     int16_t readGyroY();
 
     /**
      * @brief Read the gyroscope's Z registers.
+     * 
      * @return The gyroscope's Z reading.
      */
     int16_t readGyroZ();
@@ -142,54 +159,63 @@ class MPU6500{
 
     /**
      * @brief Obtains the most recent gyroscope X reading in rad/s.
+     * 
      * @return The most recent raw gyroscope X reading in rad/s.
      */
     float getGyroX(){return this->xGyro;}
 
     /**
      * @brief Obtains the most recent gyroscope Y reading in rad/s.
+     * 
      * @return The most recent raw gyroscope Y reading in rad/s.
      */
     float getGyroY(){return this->yGyro;}
 
     /**
      * @brief Obtains the most recent gyroscope Z reading in rad/s.
+     * 
      * @return The most recent raw gyroscope Z reading in rad/s.
      */
     float getGyroZ(){return this->zGyro;}
 
     /**
      * @brief Obtains the most recent raw gyroscope X reading.
+     * 
      * @return The most recent raw gyroscope X reading.
      */
     int16_t getGyroXRaw(){return this->xGyroRaw;}
 
     /**
      * @brief Obtains the most recent raw gyroscope Y reading.
+     * 
      * @return The most recent raw gyroscope Y reading.
      */
     int16_t getGyroYRaw(){return this->yGyroRaw;}
 
     /**
      * @brief Obtains the most recent raw gyroscope Y reading.
+     * 
      * @return The most recent raw gyroscope Y reading.
      */
     int16_t getGyroZRaw(){return this->zGyroRaw;}
 
     /**
      * @brief Read the accelerometer's X registers.
+     * 
      * @return The acceleromter's X reading.
      */
     int16_t readAccelX();
 
     /**
      * @brief Read the accelerometer's Y registers.
+     * 
      * @return The acceleromter's Y reading.
      */
     int16_t readAccelY();
 
     /**
      * @brief Read the accelerometer's Z registers.
+     * 
      * @return The acceleromter's Z reading.
      */
     int16_t readAccelZ();
@@ -199,78 +225,91 @@ class MPU6500{
 
     /**
      * @brief Obtains the most recent accelerometer X reading in m/s^2.
+     * 
      * @return The most recent accelerometer X reading in m/s^2.
      */
     float getAccelX(){return this->xAccel;}
 
     /**
      * @brief Obtains the most recent accelerometer Y reading in m/s^2.
+     * 
      * @return The most recent accelerometer Y reading in m/s^2.
      */
     float getAccelY(){return this->yAccel;}
 
     /**
      * @brief Obtains the most recent accelerometer Z reading in m/s^2.
+     * 
      * @return The most recent accelerometer Z reading in m/s^2.
      */
     float getAccelZ(){return this->zAccel;}
 
     /**
      * @brief Obtains the most recent raw accelerometer X reading.
+     * 
      * @return The most recent raw accelerometer X reading.
      */
     int16_t getAccelXRaw(){return this->xAccelRaw;}
 
     /**
      * @brief Obtains the most recent raw accelerometer Y reading.
+     * 
      * @return The most recent raw accelerometer Y reading.
      */
     int16_t getAccelYRaw(){return this->yAccelRaw;}
 
     /**
      * @brief Obtains the most recent raw accelerometer Z reading.
+     * 
      * @return The most recent raw accelerometer Z reading.
      */
     int16_t getAccelZRaw(){return this->zAccelRaw;}
 
     /**
      * @brief Read the device's temperature registers.
+     * 
      * @return The device's temperature reading.
      */
     int16_t readTemp();
 
     /**
      * @brief Obtains the most recent temperature reading in C.
+     * 
      * @return The most recent temperature reading in C.
      */
     float getTemp(){return this->temp;}
 
     /**
      * @brief Obtains the most recent raw temperature reading.
+     * 
      * @return The most recent raw temperature reading.
      */
     int16_t getTempRaw(){return this->tempRaw;}
 
     /** 
      * @brief Resets the IC's registers.
+     * 
      * @return true if the operation is successful, false otherwise.
      */
     bool resetRegisters();
 
     /**
      * @brief Sets the chip to sleep.
+     * 
      * @return true if the operation is successful, false otherwise.
      */
     bool sleep();
 
     /**
      * @brief Wakes up the chip.
+     * 
      * @return true if the operation is successful, false otherwise.
      */
     bool wake();
 
     /**
      * @brief Sets the chip to sleep or wake.
+     * 
      * @param isAsleep true to set the chip to sleep mode, false to set to wake.
      * @return true if the operation is successful, false otherwise.
      */
@@ -281,6 +320,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the temperature sensor.
+     * 
      * @param isEnable true to enable the sensor, false othwerise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -292,6 +332,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the X accelerometer.
+     * 
      * @param isEnable true to enable the accelerometer, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -299,6 +340,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the Y accelerometer.
+     * 
      * @param isEnable true to enable the accelerometer, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -306,6 +348,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the Z accelerometer.
+     * 
      * @param isEnable true to enable the accelerometer, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -313,6 +356,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the accelerometers.
+     * 
      * @param isEnable true to enable the accelerometers, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -320,6 +364,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the X gyroscope.
+     * 
      * @param isEnable true to enable the gyroscope, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -327,6 +372,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the Y gyroscope.
+     * 
      * @param isEnable true to enable the gyroscope, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -334,6 +380,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the Z gyroscope.
+     * 
      * @param isEnable true to enable the gyroscope, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -341,6 +388,7 @@ class MPU6500{
 
     /**
      * @brief Enables/disables the gyroscopes.
+     * 
      * @param isEnable true to enable the gyroscope, false otherwise.
      * @return true if the operation is successful, false otherwise.
      */
@@ -349,6 +397,7 @@ class MPU6500{
     // TODO: Create doxygen.
     /**
      * @brief
+     * 
      * @return
      */
     uint8_t whoAmI();
@@ -405,6 +454,7 @@ class MPU6500{
     // TODO: Create doxygen
     /**
      * @brief
+     * 
      * @param
      * @param 
      * @return

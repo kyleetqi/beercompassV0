@@ -187,6 +187,12 @@ int16_t QMC5883L::readZ() {
     return readAxis(ZMSB_REG, ZLSB_REG, this->zRaw, this->z, this->zGauss, this->zMax, this->zMin);
 }
 
+void QMC5883L::read(){
+    this->readX();
+    this->readY();
+    this->readZ();
+}
+
 float QMC5883L::azimuth(float xNorm, float yNorm){
     float angle = atan2(yNorm, xNorm) * RAD_TO_DEG; // Obtain angle in radians
     // Convert angle to compass sign convention

@@ -15,13 +15,16 @@
 #define CTRLB_REG 0x0B
 
 // Multiply to convert radians to degrees
+#ifndef RAD_TO_DEG
 #define RAD_TO_DEG 57.29577951308232 // 180/PI
+#endif
 
 class QMC5883L{
     public:
 
     /**
      * @brief Class constructor.
+     * 
      * @param myAddress The I2C address of the object.
      */
     QMC5883L(uint8_t myAddress);
@@ -38,6 +41,7 @@ class QMC5883L{
 
     /**
      * @brief Sets the magnetometer's operating mode.
+     * 
      * @param mode The desired mode.
      * @return true if the configuration is successful, false otherwise.
      */
@@ -45,13 +49,15 @@ class QMC5883L{
 
     /**
      * @brief Sets the magnetometer's data output frequency.
-     * @param odr Output data rate in Hz. Valid values: 10, 50, 100, 200. Default value is 100.
+     * 
+     * @param odr Output data rate in Hz. Valid values: 10, 50, 100, 200. Default value is 10.
      * @return true if the configuration is successful, false otherwise.
      */
-    bool setOutputRate(uint8_t odr = 100);
+    bool setOutputRate(uint8_t odr = 10);
 
     /**
      * @brief Sets the magnetometer's over sample rate ratio
+     * 
      * @param osr1 Over sample rate ratio. Valid values: 1, 2, 4, 8. Default value is 2.
      * @return true if the configuration is successful, false otherwise.
      */
@@ -59,6 +65,7 @@ class QMC5883L{
     
     /**
      * @brief Sets the magnetometer's down sample rate ratio.
+     * 
      * @param osr2 Down sample rate ratio. Valid values: 1, 2, 4, 8. Default value is 4.
      * @return true if the configuration is successful, false otherwise.
      */
@@ -66,6 +73,7 @@ class QMC5883L{
 
     /**
      * @brief Sets the magnetometer's magnetic range.
+     * 
      * @param rng Magnetic range in Gauss. Valid values: 2, 8, 12, 30. Default value is 2.
      * @return true if the configuration is successful, false otherwise.
      */
@@ -82,6 +90,7 @@ class QMC5883L{
 
     /**
      * @brief Sets the magnetometer's set/reset mode.
+     * 
      * @param mode The desired mode.
      * @return true if the configuration is successful, false otherwise.
      */
@@ -89,30 +98,35 @@ class QMC5883L{
 
     /**
      * @brief Resets the magnetometer's registers to its default values.
+     * 
      * @return true if the operation is successful, false otherwise.
      */
     bool resetRegisters();
 
     /** 
      * @brief Tells you if the magnetometer has data ready.
+     * 
      * @return true if the magnetometer has new data ready, false otherwise.
      */
     bool isDRDY();
 
     /**
      * @brief Indicates if the reading exceeds -30,000 to 30,000 LSBs. Register resets when read.
+     * 
      * @return true if an output exceeds the range, false otherwise.
      */
     bool isOVFL();
 
     /** 
      * @brief Determines and stores the maximum and minimum readings in the X, Y, and Z directions.
+     * 
      * @param calibrationTime Duration of no-change before ending calibration in ms.
      */
     void calibrate(int calibrationTime);
 
     /**
      * @brief Manually set magnetometer's maximum/minimum readings for calibration.
+     * 
      * @param xMax The maximum reading in the X direction.
      * @param yMax The maximum reading in the Y direction.
      * @param zMax The maximum reading in the Z direction.
@@ -123,55 +137,69 @@ class QMC5883L{
     void setCalibrationData(int16_t xMax, int16_t yMax, int16_t zMax, int16_t xMin, int16_t yMin, int16_t zMin);
 
     /** 
-     * @brief Reads the magnetometer's raw reading in the X axis.
+     * @brief Reads the magnetometer's X register.
+     * 
      * @return The magnetometer's raw X axis reading.
      */
     int16_t readX();
 
     /** 
-     * @brief Reads the magnetometer's raw Y axis reading.
+     * @brief Reads the magnetometer's Y register.
+     * 
      * @return The magnetometer's raw Y axis reading.
      */
     int16_t readY();
 
     /**
-    * @brief Reads the magnetometer's raw Z axis reading.
+    * @brief Reads the magnetometer's Z register.
+    * 
     * @return The magnetometer's raw Z axis reading.
     */
     int16_t readZ();
 
     /**
+     * @brief Reads the magnetometer's 3 axis.
+     */
+    void read();
+
+    /**
      * @brief Obtains the most recent magnetometer raw x reading.
+     * 
      * @return The most recent raw x reading.
      */
     int16_t getXRaw(){return this->xRaw;}
 
     /**
      * @brief Obtains the most recent magnetometer raw y reading.
+     * 
      * @return The most recent raw y reading.
      */
     int16_t getYRaw(){return this->yRaw;}
 
     /**
      * @brief Obtains the most recent magnetometer raw z reading.
+     * 
      * @return The most recent raw z reading.
      */
     int16_t getZRaw(){return this->zRaw;}
 
     /**
      * @brief Obtains the most recent magnetometer normalized x reading.
+     * 
      * @return The most recent normalized x reading.
      */
     float getX(){return this->x;}
 
     /**
      * @brief Obtains the most recent magnetometer normalized y reading.
+     * 
      * @return The most recent normalized y reading.
      */
     float getY(){return this->y;}
 
     /**
      * @brief Obtains the most recent magnetometer normalized z reading.
+     * 
      * @return The most recent normalized z reading.
      */
     float getZ(){return this->z;}
@@ -193,6 +221,7 @@ class QMC5883L{
 
     /**
      * @brief Calculates the azimuth/heading of the compass.
+     * 
      * @param xNorm The normalized X reading of the magnetometer [-1,1].
      * @param yNorm The normalized Y reading of the magnetometer [-1,1].
      * @return The magnetometer azimuth/heading in degrees.
@@ -201,36 +230,42 @@ class QMC5883L{
 
     /**
      * @brief Obtain the magnetometer's maximum X axis reading.
+     * 
      * @return The magnetometer's maximum X axis reading.
      */
     int16_t getXMax(){return this->xMax;}
 
     /**
      * @brief Obtain the magnetometer's maximum Y axis reading.
+     * 
      * @return The magnetometer's maximum Y axis reading.
      */ 
     int16_t getYMax(){return this->yMax;}
 
     /**
      * @brief Obtain the magnetometer's maximum Z axis reading.
+     * 
      * @return The magnetometer's maximum Z axis reading.
      */    
     int16_t getZMax(){return this->zMax;}
 
     /**
      * @brief Obtain the magnetometer's minimum X axis reading.
+     * 
      * @return The magnetometer's minimum X axis reading.
      */
     int16_t getXMin(){return this->xMin;}
 
     /**
      * @brief Obtain the magnetometer's minimum Y axis reading.
+     * 
      * @return The magnetometer's minimum Y axis reading.
      */
     int16_t getYMin(){return this->yMin;}
 
     /**
      * @brief Obtain the magnetometer's minimum Z axis reading.
+     * 
      * @return The magnetometer's minimum Z axis reading.
      */
     int16_t getZMin(){return this->zMin;}
@@ -274,6 +309,7 @@ class QMC5883L{
 
     /**
      * @brief Reads raw magnetometer data from a specified axis and updates internal state.
+     * 
      * @param msbReg The register address containing the MSB axis information.
      * @param lsbReg The register address containing the LSB axis information.
      * @param rawStorage The variable where the raw reading should be stored.
@@ -286,6 +322,7 @@ class QMC5883L{
 
     /**
      * @brief Normalize magnetometer reading to a value between -1 and 1.
+     * 
      * @param val The magnetometer reading to be normalized.
      * @param maxVal The maximum reading in the desired axis.
      * @param minVal The minimum reading in the desired axis.
