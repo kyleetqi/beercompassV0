@@ -6,6 +6,7 @@
 #include "mpu6500.h"
 #include "neo_6m.h"
 #include "imu.h"
+#include "navigation.h"
 
 // OLED global declarations
 #define OLED_ADDR 0x3c // I2C address of OLED
