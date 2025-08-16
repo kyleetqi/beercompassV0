@@ -1,11 +1,12 @@
 #include "imu.h"
+#include "utils.h"
 
 float pitch_accel(float ax, float ay, float az){
-    return atan2(-ax, sqrt(ay * ay + az * az));
+    return atan2f(-ax, sqrt(ay * ay + az * az));
 }
 
 float roll_accel(float ay, float az){
-    return atan2(ay, az);
+    return atan2f(ay, az);
 }
 
 float yaw_accel_mag(float ax, float ay, float az, float mx, float my, float mz){
@@ -13,7 +14,7 @@ float yaw_accel_mag(float ax, float ay, float az, float mx, float my, float mz){
     float roll = roll_accel(ay, az);
     float mxh = mx * cos(pitch) + mz * sin(pitch);
     float myh = mx * sin(roll) * sin(pitch) + my * cos(roll) - mz * sin(roll) * cos(pitch);
-    return atan2(-myh, mxh);
+    return atan2f(-myh, mxh);
 }
 
 float true_azimuth(float yaw){
