@@ -15,10 +15,6 @@
 #ifndef IMU_H
 #define IMU_H
 
-#ifndef RAD_TO_DEG
-#define RAD_TO_DEG 57.29577951308232 // 180/PI
-#endif
-
 #include <Arduino.h>
 
 /**
