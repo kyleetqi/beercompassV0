@@ -194,7 +194,7 @@ void QMC5883L::read(){
 }
 
 float QMC5883L::azimuth(float xNorm, float yNorm){
-    float angle = atan2(yNorm, xNorm) * RAD_TO_DEG; // Obtain angle in radians
+    float angle = atan2f(yNorm, xNorm) * RAD_TO_DEG; // Obtain angle in radians
     // Convert angle to compass sign convention
     return fmod(450-angle, 360);
 }
