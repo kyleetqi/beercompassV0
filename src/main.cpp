@@ -77,7 +77,7 @@ void setup() {
   // Configure accel/gyro settings
   setupSuccess &= mpu6500.resetRegisters();
   setupSuccess &= mpu6500.setSampleRateDivider(MPU6500_SAMPLE_RATE_DIVIDER);
-  setupSuccess &= mpu6500.setFIFOMode(MPU6500_FIFO_MODE); // Choose value
+  setupSuccess &= mpu6500.setFIFOMode(MPU6500_FIFO_MODE);
   setupSuccess &= mpu6500.setFSync(MPU6500::EXT_SOURCE_DISABLE);
   setupSuccess &= mpu6500.setAccelLPF(1, MPU6500_ACCEL_BANDWIDTH);
   setupSuccess &= mpu6500.setAccelRange(MPU6500_ACCEL_RANGE);
