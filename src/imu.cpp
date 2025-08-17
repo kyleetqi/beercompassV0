@@ -12,8 +12,8 @@ float roll_accel(float ay, float az){
 float yaw_accel_mag(float ax, float ay, float az, float mx, float my, float mz){
     float pitch = pitch_accel(ax, ay, az);
     float roll = roll_accel(ay, az);
-    float mxh = mx * cos(pitch) + mz * sin(pitch);
-    float myh = mx * sin(roll) * sin(pitch) + my * cos(roll) - mz * sin(roll) * cos(pitch);
+    float mxh = mx * cosf(pitch) + mz * sinf(pitch);
+    float myh = mx * sinf(roll) * sinf(pitch) + my * cosf(roll) - mz * sinf(roll) * cosf(pitch);
     return atan2f(-myh, mxh);
 }
 
