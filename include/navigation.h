@@ -3,12 +3,20 @@
 
 #include <Arduino.h>
 
+#ifndef DEG_TO_RAD
+#define DEG_TO_RAD 0.017453292519943295769236907684886
+#endif
+
+#ifndef EARTH_RADIUS
+#define EARTH_RADIUS 6371000
+#endif
+
 /**
  * @brief
  */
 struct Location {
-    float x; // Latitude
-    float y; // Longitude
+    float lat;
+    float lon;
 };
 
 /**
@@ -43,5 +51,7 @@ Location closestTarget(const Location myLocation, const Location locations[], in
  * @param
  */
 float targetHeading(const float heading, const Location myLocation, const Location target);
+
+float targetDistance(const Location myLocation, const Location target);
 
 #endif
