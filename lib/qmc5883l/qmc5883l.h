@@ -16,7 +16,7 @@
 
 // Multiply to convert radians to degrees
 #ifndef RAD_TO_DEG
-#define RAD_TO_DEG 57.29577951308232f // 180/PI
+#define RAD_TO_DEG 57.295779513082320876798154814105
 #endif
 
 class QMC5883L{
