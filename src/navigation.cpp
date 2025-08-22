@@ -2,6 +2,14 @@
 #include "utils.h"
 
 Location closestTarget(const Location myLocation, const Location locations[], int nLocations){
+    // Edge case handling
+    if(nLocations == 1){
+        return locations[0];
+    }
+    if(nLocations == 0){
+        return myLocation;
+    }
+
     int nearestIndex = 0;
     float minDistanceSq = MAXFLOAT;
 
@@ -42,19 +50,6 @@ float targetHeading(const float azimuth, const Location myLocation, const Locati
         heading -= 360.0f;
     }
     return heading;
-
-    // Old implementation that assumes Earth curvature is negligible.
-    // Keep just in case.
-    // float dx = target.lon - myLocation.lon;
-    // float dy = target.lat - myLocation.lat;
-    // float heading = atan2f(dy, dx) * RAD_TO_DEG - myHeading;
-    // if (heading < 0){
-    //     heading += 360.0f;
-    // }
-    // if (heading >= 360.0f){
-    //     heading -= 360.0f;
-    // }
-    // return heading;
 }
 
 float targetDistance(const Location myLocation, const Location target){
