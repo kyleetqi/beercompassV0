@@ -12,7 +12,7 @@
 #endif
 
 /**
- * @brief
+ * @brief Struct to hold the longitutde and latitude of a location.
  */
 struct Location {
     float lat;
@@ -20,38 +20,32 @@ struct Location {
 };
 
 /**
- * @brief
- */
-const Location LOCATIONS[] = {
-    {0, 0},
-    {0, 0},
-    {0, 0},
-    {0, 0},
-};
-
-/**
- * @brief
- */
-const int nLocations = sizeof(LOCATIONS)/sizeof(LOCATIONS[0]);
-
-/**
- * @brief
+ * @brief Calculates the closest location from a list of locations.
  * 
- * @param
- * @param
- * @param
+ * @param myLocation The user's current location.
+ * @param locations An array of locations.
+ * @param nLocations The number of locations in the locations array.
+ * @return the Location struct containing the closest latitutde/longitutde coordinates.
  */
 Location closestTarget(const Location myLocation, const Location locations[], int nLocations);
 
 /**
- * @brief
+ * @brief Calculates the relative heading of the user to a target location.
  * 
- * @param
- * @param
- * @param
+ * @param azimuth The user's heading with respect to magnetic north.
+ * @param myLocation The user's location.
+ * @param target The target location.
+ * @return The relative heading towards the target location.
  */
-float targetHeading(const float heading, const Location myLocation, const Location target);
+float targetHeading(const float azimuth, const Location myLocation, const Location target);
 
+/**
+ * @brief Calculates the distance between the user's location and a target location.
+ * 
+ * @param myLocation The user's location.
+ * @param target The target location.
+ * @return The distance to the target location.
+ */
 float targetDistance(const Location myLocation, const Location target);
 
 #endif
