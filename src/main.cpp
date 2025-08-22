@@ -7,6 +7,7 @@
 #include "neo_6m.h"
 #include "imu.h"
 #include "navigation.h"
+#include "my_locations.h"
 
 // OLED global declarations
 #define OLED_ADDR 0x3c // I2C address of OLED
@@ -19,7 +20,7 @@
 #define SCL_PIN 22 // I2C SCL pin
 #define I2C_FREQ 100000 // I2C clock speed, standard mode (HZ)
 
-// Magnetometer global declarations
+// QMC5883L global declarations
 #define QMC5883L_ADDR 0x2C // I2C address of QMC5883L
 #define QMC5883L_CALIBRATION_TIME 5000 
 #define QMC5883L_OUTPUT_RATE 10 // Data output in Hz
@@ -30,7 +31,7 @@
 // Create magnetometer object
 QMC5883L qmc5883l(QMC5883L_ADDR);
 
-// Accel/Gyro global declarations
+// MPU6500 global declarations
 #define MPU6500_ADDR 0x68 // I2C address of MPU6500
 #define MPU6500_SAMPLE_RATE_DIVIDER 9 // Eq. to 100 Hz output rate
 #define MPU6500_FIFO_MODE 0 // Overwrite old data
@@ -45,6 +46,15 @@ QMC5883L qmc5883l(QMC5883L_ADDR);
 // Create MPU6500 object
 MPU6500 mpu6500(MPU6500_ADDR);
 
+// Neo6M global declarations
+#define NEO6M_SERIAL_PORT Serial1
+#define NEO6M_BAUD_RATE 9600
+#define NEO6M_RX 19 // TODO: Confirm what pin I want to use
+#define NEO6M_TX 18 // TODO: Confirm what pin I want to use
+
+// Create Neo6M object
+Neo6M neo6m(NEO6M_SERIAL_PORT, NEO6M_BAUD_RATE, NEO6M_RX, NEO6M_TX);
+
 // Struct for storing sensor information
 Vec3 accel, mag;
 
@@ -55,6 +65,9 @@ void setup() {
   // Initialize Serial
   Serial.begin(115200);
   delay(1000);
+
+  // Initialize Neo6M Serial
+  neo6m.begin();
 
   // Initialize I2C
   if(!i2cInit(SDA_PIN, SCL_PIN, I2C_FREQ)){
@@ -140,6 +153,19 @@ void loop() {
   Serial.println((int)azimuth);
 
   Serial.println("END READING");
+
+  // Read Neo6M
+  if(neo6m.isDRDY()){
+    neo6m.read();
+  }
+  Location myLocation = {neo6m.getLatitude(), neo6m.getLongitude()};
+
+  // Find heading and distance to target
+  Location target = closestTarget(myLocation, LOCATIONS, nLocations);
+  float heading = targetHeading(azimuth, myLocation, target);
+  float distance = targetDistance(myLocation, target);
+
+  // TODO: Stuff here to make info display on and OLED screen.
 
   delay(200);
 }
