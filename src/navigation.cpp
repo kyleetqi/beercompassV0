@@ -18,7 +18,7 @@ Location closestTarget(const Location myLocation, const Location locations[], in
     return closest;
 }
 
-float targetHeading(const float myHeading, const Location myLocation, const Location target){
+float targetHeading(const float azimuth, const Location myLocation, const Location target){
     // Convert to radians
     float myLat = myLocation.lat * DEG_TO_RAD;
     float targetLat = target.lat * DEG_TO_RAD;
@@ -34,7 +34,7 @@ float targetHeading(const float myHeading, const Location myLocation, const Loca
     if (heading < 0 ) {
         heading += 360.0f;
     }
-    heading -= myHeading;
+    heading -= azimuth;
     if (heading < 0) {
         heading += 360.0f;
     }
