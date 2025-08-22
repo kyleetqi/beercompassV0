@@ -1,5 +1,7 @@
 // Include required libraries
 #include <Arduino.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 #include "i2c_handler.h"
 #include "utils.h"
 #include "qmc5883l.h"
@@ -10,10 +12,13 @@
 #include "my_locations.h"
 
 // OLED global declarations
-#define OLED_ADDR 0x3c // I2C address of OLED
-#define SCREEN_WIDTH 128 // Screen width
-#define SCREEN_HEIGHT 64 // Screen height
-#define OLED_RESET -1 // OLED reset macro
+#define SSD1306_ADDR 0x3c // I2C address of OLED
+#define SSD1306_SCREEN_WIDTH 128 // Screen width
+#define SSD1306_SCREEN_HEIGHT 64 // Screen height
+#define SSD1306_RESET -1 // OLED reset macro
+
+// Create SSD1306 object
+Adafruit_SSD1306 ssd1306(SSD1306_SCREEN_WIDTH, SSD1306_SCREEN_HEIGHT, &Wire, SSD1306_RESET);
 
 // I2C global declarations
 #define SDA_PIN 21 // I2C SDA pin
@@ -28,7 +33,7 @@
 #define QMC5883L_DOWNSAMPLE_RATE 4 // Downsample rate
 #define QMC5883L_RANGE 2 // +/- range in Gauss
 
-// Create magnetometer object
+// Create QMC5883L object
 QMC5883L qmc5883l(QMC5883L_ADDR);
 
 // MPU6500 global declarations
@@ -39,9 +44,6 @@ QMC5883L qmc5883l(QMC5883L_ADDR);
 #define MPU6500_ACCEL_RANGE 2 // +/- range in m/s^2
 #define MPU6500_TEMP_DISABLE 0 // Disable temp sensor
 #define MPU6500_GYRO_DISABLE 0 // Disable gyro sensor
-// The following macros are unecessary if gyro remains disabled.
-// #define MPU6500_GYRO_BANDWIDTH 44
-// #define MPU6500_GYRO_RANGE 250
 
 // Create MPU6500 object
 MPU6500 mpu6500(MPU6500_ADDR);
@@ -60,6 +62,8 @@ Vec3 accel, mag;
 
 // Keep track of setup errors
 bool setupSuccess = true;
+bool qmc5883lSuccess = true;
+bool mpu6500Success = true;
 
 void setup() {
   // Initialize Serial
@@ -75,33 +79,48 @@ void setup() {
     setupSuccess = false;
   }
 
+  // Initialize ssd1306
+  if(!ssd1306.begin(SSD1306_SWITCHCAPVCC, SSD1306_ADDR)){
+    Serial.println("SSD1306 failed to initialize!");
+    setupSuccess = false;
+  }
+
   // Scan for I2C devices (if necessary)
   // i2cScan();
 
-  // Configure magnetometer settings
-  setupSuccess &= qmc5883l.resetRegisters();
-  setupSuccess &= qmc5883l.setMode(QMC5883L::MODE_CONTINUOUS);
-  setupSuccess &= qmc5883l.setOutputRate(QMC5883L_OUTPUT_RATE);
-  setupSuccess &= qmc5883l.setOverSampleRate(QMC5883L_OVERSAMPLE_RATE);
-  setupSuccess &= qmc5883l.setDownSampleRate(QMC5883L_DOWNSAMPLE_RATE);
-  setupSuccess &= qmc5883l.setSetResetMode(QMC5883L::SET_ON);
-  setupSuccess &= qmc5883l.setRange(QMC5883L_RANGE);
+  // Configure qmc5883l settings
+  qmc5883lSuccess &= qmc5883l.resetRegisters();
+  qmc5883lSuccess &= qmc5883l.setMode(QMC5883L::MODE_CONTINUOUS);
+  qmc5883lSuccess &= qmc5883l.setOutputRate(QMC5883L_OUTPUT_RATE);
+  qmc5883lSuccess &= qmc5883l.setOverSampleRate(QMC5883L_OVERSAMPLE_RATE);
+  qmc5883lSuccess &= qmc5883l.setDownSampleRate(QMC5883L_DOWNSAMPLE_RATE);
+  qmc5883lSuccess &= qmc5883l.setSetResetMode(QMC5883L::SET_ON);
+  qmc5883lSuccess &= qmc5883l.setRange(QMC5883L_RANGE);
+  setupSuccess &= qmc5883lSuccess;
+  if(!qmc5883lSuccess){
+    Serial.println("QMC5883L failed to initialize!");
+  }
 
-  // Configure accel/gyro settings
-  setupSuccess &= mpu6500.resetRegisters();
-  setupSuccess &= mpu6500.setSampleRateDivider(MPU6500_SAMPLE_RATE_DIVIDER);
-  setupSuccess &= mpu6500.setFIFOMode(MPU6500_FIFO_MODE);
-  setupSuccess &= mpu6500.setFSync(MPU6500::EXT_SOURCE_DISABLE);
-  setupSuccess &= mpu6500.setAccelLPF(1, MPU6500_ACCEL_BANDWIDTH);
-  setupSuccess &= mpu6500.setAccelRange(MPU6500_ACCEL_RANGE);
-  // Disable gyro for now
-  // setupSuccess &= mpu6500.setGyroLPF(1, MPU6500_GYRO_BANDWIDTH);
-  // setupSuccess &= mpu6500.setGyroRange(MPU6500_GYRO_RANGE);
-  setupSuccess &= mpu6500.enableGyro(MPU6500_GYRO_DISABLE);
-  setupSuccess &= mpu6500.enableTempSense(MPU6500_TEMP_DISABLE);
+  // Configure mpu6500 settings
+  mpu6500Success &= mpu6500.resetRegisters();
+  mpu6500Success &= mpu6500.setSampleRateDivider(MPU6500_SAMPLE_RATE_DIVIDER);
+  mpu6500Success &= mpu6500.setFIFOMode(MPU6500_FIFO_MODE);
+  mpu6500Success &= mpu6500.setFSync(MPU6500::EXT_SOURCE_DISABLE);
+  mpu6500Success &= mpu6500.setAccelLPF(1, MPU6500_ACCEL_BANDWIDTH);
+  mpu6500Success &= mpu6500.setAccelRange(MPU6500_ACCEL_RANGE);
+  mpu6500Success &= mpu6500.enableGyro(MPU6500_GYRO_DISABLE);
+  mpu6500Success &= mpu6500.enableTempSense(MPU6500_TEMP_DISABLE);
+  setupSuccess &= mpu6500Success;
+  if(!mpu6500Success){
+    Serial.println("MPU6500 failed to initialize!");
+  }
 
-  // Calibrate compass
-  qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
+  // Calibrate qmc5883l
+  // Comment out if calibration isn't necessary
+  if(qmc5883lSuccess){
+    qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
+  }
+
 }
 
 void loop() {
@@ -165,7 +184,7 @@ void loop() {
   float heading = targetHeading(azimuth, myLocation, target);
   float distance = targetDistance(myLocation, target);
 
-  // TODO: Stuff here to make info display on and OLED screen.
+  // TODO: Stuff here to make info display on OLED screen.
 
   delay(200);
 }
