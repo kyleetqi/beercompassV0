@@ -1,14 +1,15 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#define CENTER_X 64
-#define CENTER_Y 32
+#include <Arduino.h>
+#include <Adafruit_SSD1306.h>
 
 /**
- * @brief TBD
- * @param azimuth
- * @param target
+ * @brief Draws a compass needle pointing towards a target heading
+ * @param azimuth The user's current heading in degrees, using standard compass convention.
+ * @param target The azimuth of the target in degrees, using standard compass convention.
+ * @param display Reference to the Adafruit_SSD1306 display object to draw on.
  */
-void drawCompassNeedle(float azimuth, float target);
+void updateCompass(float azimuth, float target, Adafruit_SSD1306 &display);
 
 #endif
