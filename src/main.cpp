@@ -30,9 +30,9 @@ Adafruit_SSD1306 ssd1306(SSD1306_SCREEN_WIDTH, SSD1306_SCREEN_HEIGHT, &Wire, SSD
 #define QMC5883L_ADDR 0x2C // I2C address of QMC5883L
 #define QMC5883L_CALIBRATION_TIME 5000 
 #define QMC5883L_OUTPUT_RATE 10 // Data output in Hz
-#define QMC5883L_OVERSAMPLE_RATE 2 // Oversample rate
-#define QMC5883L_DOWNSAMPLE_RATE 4 // Downsample rate
-#define QMC5883L_RANGE 2 // +/- range in Gauss
+#define QMC5883L_OVERSAMPLE_RATE 8 // Oversample rate
+#define QMC5883L_DOWNSAMPLE_RATE 8 // Downsample rate
+#define QMC5883L_RANGE 8 // +/- range in Gauss
 
 // Create QMC5883L object
 QMC5883L qmc5883l(QMC5883L_ADDR);
@@ -52,8 +52,8 @@ MPU6500 mpu6500(MPU6500_ADDR);
 // Neo6M global declarations
 #define NEO6M_SERIAL_PORT Serial1
 #define NEO6M_BAUD_RATE 9600
-#define NEO6M_RX 19 // TODO: Confirm what pin I want to use
-#define NEO6M_TX 18 // TODO: Confirm what pin I want to use
+#define NEO6M_RX 16 // TODO: Confirm what pin I want to use
+#define NEO6M_TX 17 // TODO: Confirm what pin I want to use
 
 // Create Neo6M object
 Neo6M neo6m(NEO6M_SERIAL_PORT, NEO6M_BAUD_RATE, NEO6M_RX, NEO6M_TX);
@@ -177,7 +177,10 @@ void loop() {
   // Read Neo6M
   if(neo6m.isDRDY()){
     neo6m.read();
+  } else {
+    Serial.println("Neo6M information not available!");
   }
+
   Location myLocation = {neo6m.getLatitude(), neo6m.getLongitude()};
 
   // Find heading and distance to target
