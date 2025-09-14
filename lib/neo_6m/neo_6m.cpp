@@ -5,6 +5,7 @@ Neo6M::Neo6M(HardwareSerial &serial, uint16_t baud, uint8_t rxPin, uint8_t txPin
 
 void Neo6M::begin(){
     this->serial.begin(this->baudRate);
+    delay(1000);
 }
 
 bool Neo6M::isDRDY(){
