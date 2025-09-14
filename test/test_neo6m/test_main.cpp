@@ -4,6 +4,7 @@
 #include "neo_6m.h"
 #include "navigation.h"
 #include "my_locations.h"
+#include <HardwareSerial.h>
 
 // Neo6M global declarations
 #define NEO6M_SERIAL_PORT Serial1
@@ -24,7 +25,6 @@ void setup() {
 
   // Initialize Neo6M Serial
   neo6m.begin();
-
 }
 
 void loop() {
@@ -35,16 +35,15 @@ void loop() {
   }
 
   // Read Neo6M
-  if(neo6m.isDRDY()){
+  while(neo6m.isDRDY()){
     neo6m.read();
-  } else {
-    Serial.println("Information not available!");
   }
 
-  Serial.print("My latitude: ");
+  Serial.print("Latitude: ");
   Serial.println(neo6m.getLatitude());
-  Serial.print( "My longitude: ");
+  Serial.print("Longitude: ");
   Serial.println(neo6m.getLongitude());
+  Serial.println("-------------------");
 
-  delay(1000);
+  delay(200);
 }

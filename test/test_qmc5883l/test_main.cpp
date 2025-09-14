@@ -7,14 +7,14 @@
 // I2C global declarations
 #define SDA_PIN 21 // I2C SDA pin
 #define SCL_PIN 22 // I2C SCL pin
-#define I2C_FREQ 100000 // I2C clock speed, standard mode (HZ)
+#define I2C_FREQ 100000 // I2C clock speed, fast mode (HZ)
 
 // QMC5883L global declarations
 #define QMC5883L_ADDR 0x2C // I2C address of QMC5883L
 #define QMC5883L_CALIBRATION_TIME 5000 
 #define QMC5883L_OUTPUT_RATE 10 // Data output in Hz
-#define QMC5883L_OVERSAMPLE_RATE 2 // Oversample rate
-#define QMC5883L_DOWNSAMPLE_RATE 4 // Downsample rate
+#define QMC5883L_OVERSAMPLE_RATE 8 // Oversample rate
+#define QMC5883L_DOWNSAMPLE_RATE 8 // Downsample rate
 #define QMC5883L_RANGE 2 // +/- range in Gauss
 
 // Create QMC5883L object
@@ -57,7 +57,7 @@ void setup() {
   // Calibrate qmc5883l
   // Comment out if calibration isn't necessary
   if(qmc5883lSuccess){
-    // qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
+    qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
   }
 }
 
@@ -70,23 +70,27 @@ void loop() {
 
   // Get magnetometer readings
   if(qmc5883l.isDRDY() == 1){
+    delayMicroseconds(50); // allow registers to settle
     qmc5883l.read();
-    mag.x = qmc5883l.getXRaw();
-    mag.y = qmc5883l.getYRaw();
-    mag.z = qmc5883l.getZRaw();
+    mag.x = qmc5883l.getX();
+    mag.y = qmc5883l.getY();
+    mag.z = qmc5883l.getZ();
   } else {
     Serial.println("Data not ready!");
   }
 
   // Print magnetometer readings
+  Serial.print("isOVFL?: ");
+  Serial.println(qmc5883l.isOVFL());
   Serial.print("X mag: ");
   Serial.print(mag.x);
   Serial.print(" Y mag: ");
   Serial.print(mag.y);
   Serial.print(" Z mag: ");
   Serial.println(mag.z);
-  // Serial.print(" Azimuth: ");
-  // Serial.println(qmc5883l.azimuth(mag.x, mag.y));
+  Serial.print(" Azimuth: ");
+  Serial.println(qmc5883l.azimuth(mag.x, mag.y));
+  Serial.println("----------------------");
 
   delay(1000);
 }
