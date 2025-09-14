@@ -44,28 +44,28 @@ bool i2cWriteBit(uint8_t addr, uint8_t reg, bool myBit, uint8_t bitPos){
   if (bitPos > 7){
     return false;
   }
-  return i2cWrite(addr, reg, (uint8_t)myBit, 1 << bitPos);
+  return i2cWrite(addr, reg, (uint8_t)myBit << bitPos, 1 << bitPos);
 }
 
-uint8_t i2cRead(uint8_t addr, uint8_t reg){
+uint8_t i2cRead(uint8_t addr, uint8_t reg) {
     Wire.beginTransmission(addr);
     Wire.write(reg);
-    if (Wire.endTransmission(false) != 0){
-        Serial.println("I2C Read failed!");
-        return 0; // TODO: need to figure out a failed read return
-    }
+    Wire.endTransmission(false); // send repeated start
 
-    uint8_t numBytes = 1; // Need dummy variable to get rid of warning
-    Wire.requestFrom(addr, numBytes);
-    if(Wire.available()){
-        return Wire.read();
-    }
-    Serial.println("I2C Read failed!");
-    return 0; // TODO: need to figure out a failed read return
+    Wire.requestFrom(addr, (uint8_t)1);
+    return Wire.read();
 }
 
-uint16_t i2cReadTwo(uint8_t addr, uint8_t msbReg, uint8_t lsbReg){
-  uint8_t msb = i2cRead(addr, msbReg);
-  uint8_t lsb = i2cRead(addr, lsbReg);
-  return (msb << 8) | lsb; 
+
+uint16_t i2cReadTwo(uint8_t addr, uint8_t lsbReg, uint8_t msbReg){
+  Wire.beginTransmission(addr);
+  Wire.write(lsbReg);
+  Wire.endTransmission();
+  Wire.requestFrom(addr, (uint8_t)2);
+  if(Wire.available() < 2) return 0;
+  uint8_t lsb = Wire.read();
+  uint8_t msb = Wire.read();
+  return (int16_t)((msb << 8) | lsb);
 }
+
+

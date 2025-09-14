@@ -40,6 +40,7 @@ bool i2cWrite(uint8_t addr, uint8_t reg, uint8_t data, uint8_t mask);
 /**
  * @brief Sets a single bit in a desired chip register. Used for set/reset purposes.
  * 
+ * @param addr The address of the I2C device.
  * @param reg The desired register to be modifed.
  * @param myBit The bit to write to the register.
  * @param bitPos The target bit position in the desired register.
