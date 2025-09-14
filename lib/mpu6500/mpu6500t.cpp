@@ -258,7 +258,7 @@ uint8_t MPU6500::whoAmI(){
 }
 
 int16_t MPU6500::readSensor(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& storage, uint8_t sensorType){
-    int16_t val = (int16_t)i2cReadTwo(this->address, msbReg, lsbReg);
+    int16_t val = (int16_t)i2cReadTwo(this->address, lsbReg, msbReg);
     rawStorage = val;
     storage = (float)val;
     if(sensorType = 0){

@@ -207,7 +207,7 @@ float QMC5883L::azimuth(float xNorm, float yNorm){
 }
 
 int16_t QMC5883L::readAxis(uint8_t msbReg, uint8_t lsbReg, int16_t& rawStorage, float& normStorage, float& gaussStorage, int16_t maxVal, int16_t minVal){
-    int16_t val = (int16_t)(i2cReadTwo(this->address, msbReg, lsbReg));
+    int16_t val = (int16_t)(i2cReadTwo(this->address, lsbReg, msbReg));
     rawStorage = val;
     normStorage = normalize(val, maxVal, minVal);
     gaussStorage = (float)val*lsbRes;

@@ -56,16 +56,30 @@ uint8_t i2cRead(uint8_t addr, uint8_t reg) {
     return Wire.read();
 }
 
-
 uint16_t i2cReadTwo(uint8_t addr, uint8_t lsbReg, uint8_t msbReg){
-  Wire.beginTransmission(addr);
-  Wire.write(lsbReg);
-  Wire.endTransmission();
-  Wire.requestFrom(addr, (uint8_t)2);
-  if(Wire.available() < 2) return 0;
-  uint8_t lsb = Wire.read();
-  uint8_t msb = Wire.read();
-  return (int16_t)((msb << 8) | lsb);
+    // Read LSB first
+    Wire.beginTransmission(addr);
+    Wire.write(lsbReg);           
+    if (Wire.endTransmission(false) != 0) return 0;
+
+    Wire.requestFrom(addr, (uint8_t)2);
+    if(Wire.available() < 2) return 0;
+
+    uint8_t lsb = Wire.read();
+    uint8_t msb = Wire.read();
+
+    return ((uint16_t)msb << 8) | lsb;  // combine into unsigned 16-bit
 }
+
+// uint16_t i2cReadTwo(uint8_t addr, uint8_t lsbReg, uint8_t msbReg){
+//   Wire.beginTransmission(addr);
+//   Wire.write(lsbReg);
+//   Wire.endTransmission();
+//   Wire.requestFrom(addr, (uint8_t)2);
+//   if(Wire.available() < 2) return 0;
+//   uint8_t lsb = Wire.read();
+//   uint8_t msb = Wire.read();
+//   return (int16_t)((msb << 8) | lsb);
+// }
 
 
