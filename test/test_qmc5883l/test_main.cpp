@@ -43,7 +43,7 @@ void setup() {
 
   // Configure qmc5883l settings
   qmc5883lSuccess &= qmc5883l.resetRegisters();
-  qmc5883lSuccess &= qmc5883l.setMode(QMC5883L::MODE_CONTINUOUS);
+  qmc5883lSuccess &= qmc5883l.setMode(QMC5883L::MODE_NORMAL);
   qmc5883lSuccess &= qmc5883l.setOutputRate(QMC5883L_OUTPUT_RATE);
   qmc5883lSuccess &= qmc5883l.setOverSampleRate(QMC5883L_OVERSAMPLE_RATE);
   qmc5883lSuccess &= qmc5883l.setDownSampleRate(QMC5883L_DOWNSAMPLE_RATE);
@@ -57,7 +57,7 @@ void setup() {
   // Calibrate qmc5883l
   // Comment out if calibration isn't necessary
   if(qmc5883lSuccess){
-    qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
+    // qmc5883l.calibrate(QMC5883L_CALIBRATION_TIME);
   }
 }
 
@@ -71,9 +71,9 @@ void loop() {
   // Get magnetometer readings
   if(qmc5883l.isDRDY() == 1){
     qmc5883l.read();
-    mag.x = qmc5883l.getX();
-    mag.y = qmc5883l.getY();
-    mag.z = qmc5883l.getZ();
+    mag.x = qmc5883l.getXRaw();
+    mag.y = qmc5883l.getYRaw();
+    mag.z = qmc5883l.getZRaw();
   } else {
     Serial.println("Data not ready!");
   }
