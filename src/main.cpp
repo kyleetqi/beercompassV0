@@ -10,6 +10,7 @@
 #include "imu.h"
 #include "navigation.h"
 #include "my_locations.h"
+#include "display.h"
 
 // OLED global declarations
 #define SSD1306_ADDR 0x3c // I2C address of OLED
@@ -184,7 +185,8 @@ void loop() {
   float heading = targetHeading(azimuth, myLocation, target);
   float distance = targetDistance(myLocation, target);
 
-  // TODO: Stuff here to make info display on OLED screen.
+  // Display on OLED
+  updateCompass(azimuth, heading, ssd1306);
 
   delay(200);
 }
