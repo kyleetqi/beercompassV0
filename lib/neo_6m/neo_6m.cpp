@@ -1,34 +1,37 @@
 #include "neo_6m.h"
+#include <string.h>
+#include <stdlib.h>
 
 Neo6M::Neo6M(HardwareSerial &serial, uint16_t baud, uint8_t rxPin, uint8_t txPin)
-: serial(serial), baudRate(baud), rx(rxPin), tx(txPin) {}
+: serial(serial), baudRate(baud), rx(rxPin), tx(txPin) {
+    lastSentence[0] = '\0'; // initialize empty
+}
 
 void Neo6M::begin(){
-    this->serial.begin(this->baudRate);
+    this->serial.begin(this->baudRate, SERIAL_8N1, this->rx, this->tx);
     delay(1000);
 }
 
 bool Neo6M::isDRDY(){
-    if(this->serial.available() == 0){
-        return false;
-    }
-    return true;
+    return (this->serial.available() > 0);
 }
 
 bool Neo6M::read() {
     static char buffer[NEO6M_BUFFER_SIZE];
     static uint8_t index = 0;
 
-    // Read all available chars
     while (this->serial.available()) {
         char c = this->serial.read();
 
-        // If newline, we have a complete NMEA sentence
         if (c == '\n') {
-            buffer[index] = '\0'; // null terminate
-            index = 0; // reset for next sentence
+            buffer[index] = '\0'; // terminate string
 
-            // Parse only GPGGA sentences (for now)
+            // Save full raw sentence (for debug)
+            strncpy(this->lastSentence, buffer, NEO6M_BUFFER_SIZE);
+            this->lastSentence[NEO6M_BUFFER_SIZE - 1] = '\0';
+
+            index = 0;
+
             if (strncmp(buffer, "$GPGGA", 6) == 0) {
                 char *token;
                 int fieldIndex = 0;
@@ -79,18 +82,16 @@ bool Neo6M::read() {
                     token = strtok(NULL, ",");
                     fieldIndex++;
                 }
-                return true; // successfully parsed a valid sentence
+                return true;
             }
 
         } else {
-            // Store char in buffer (avoid overflow)
             if (index < NEO6M_BUFFER_SIZE - 1) {
                 buffer[index++] = c;
             } else {
-                // Overflow: reset
                 index = 0;
             }
         }
     }
-    return false; // no complete sentence yet
+    return false;
 }

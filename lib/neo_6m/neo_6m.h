@@ -100,6 +100,14 @@ class Neo6M {
      * @return The most recent number of satelites detected/used.
      */
     float getNumSatelites() {return this->numSatelites;}
+
+    // TODO: Create Doxygen
+    /**
+     * @brief TBD
+     * 
+     * @return TBD
+     */
+    char* getLastSentence() {return this->lastSentence;}
     
     private:
 
@@ -147,6 +155,12 @@ class Neo6M {
      * @brief The object's number of satelites detected/used.
      */
     uint8_t numSatelites;
+
+    // TODO: Create doxygen
+    /**
+     * @brief TBD
+     */
+    char lastSentence[NEO6M_BUFFER_SIZE];
 };
 
 #endif
