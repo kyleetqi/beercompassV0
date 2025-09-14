@@ -96,7 +96,14 @@ bool QMC5883L::setSetResetMode(SetResetMode mode){
 }
 
 bool QMC5883L::resetRegisters(){
-    return i2cWrite(this->address, CTRLB_REG, 1 << 7, 1 << 7);
+    if(!i2cWriteBit(this->address, CTRLB_REG, 1, 7)){
+        return false;
+    }
+    delay(10);
+    if(!i2cWriteBit(this->address, CTRLB_REG, 0, 7)){
+        return false;
+    }
+    return true;
 }
 
 bool QMC5883L::isDRDY(){
@@ -163,7 +170,7 @@ void QMC5883L::calibrate(int calibrationTime){
     Serial.print(this->yMin);
     Serial.print(", ");
     Serial.print(this->zMin);
-    Serial.print(");");
+    Serial.println(");");
 }
 
 void QMC5883L::setCalibrationData(int16_t xMax, int16_t yMax, int16_t zMax, int16_t xMin, int16_t yMin, int16_t zMin){
