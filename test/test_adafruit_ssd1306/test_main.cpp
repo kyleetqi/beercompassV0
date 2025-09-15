@@ -23,8 +23,9 @@ Adafruit_SSD1306 ssd1306(SSD1306_SCREEN_WIDTH, SSD1306_SCREEN_HEIGHT, &Wire, SSD
 // Keep track of setup errors
 bool setupSuccess = true;
 
-// Display angle in degrees
+// Display test angle and distance
 int angle = 0;
+int distance = 0;
 
 void setup() {
   // Initialize Serial
@@ -55,7 +56,8 @@ void loop() {
   }
 
   // Display on OLED
-  updateCompass(0, angle, ssd1306);
+  updateCompass(0, angle, distance, ssd1306);
   angle++;
+  distance++;
   delay(50);
 }
